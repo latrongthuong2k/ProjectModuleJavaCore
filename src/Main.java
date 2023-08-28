@@ -26,8 +26,12 @@ public class Main {
         // /Users/latrongthuong/Downloads/DataSave/1-WorkSpace/git/JavaCore/LMS-BT/big-project-module-2
 
         // Nạp dữ liệu vào categoryList trong InventoryManagement, từ thư mục ( categoryList.txt ) nếu có
-        fileManager.readDataCategory(projectDirectory +
-                File.separator + "repository.txt", inventoryManagement);
+//        fileManager.readDataCategory(projectDirectory +
+//                File.separator + "repository.txt", inventoryManagement);
+
+        //
+
+        fileManager.readAll(inventoryManagement);
 
         //  Run program
         inventoryManagerMenu(scanner,
@@ -154,7 +158,7 @@ public class Main {
                 case 1 -> {
                     // Thêm danh mục / ghi file
                     categoryManager.addCategory(scanner, categoryList);
-                    fileManager.writeFileCategory(categoryList, projectDirectory);
+                    fileManager.writeFileCategory2(categoryList);
                 }
                 case 2 ->
                     // Hiển thị bảng danh mục
@@ -162,12 +166,12 @@ public class Main {
                 case 3 -> {
                     // Cập nhật danh mục / ghi file
                     categoryManager.updateCategory(scanner, categoryList);
-                    fileManager.writeFileCategory(categoryList, projectDirectory);
+                    fileManager.writeFileCategory2(categoryList);
                 }
                 case 4 -> {
                     //  Xoá danh mục / ghi file
                     categoryManager.deleteCategory(scanner, categoryList);
-                    fileManager.writeFileCategory(categoryList, projectDirectory);
+                    fileManager.writeFileCategory2(categoryList);
                 }
                 case 5 -> {
                     // tìm kiếm danh mục theo tên
@@ -251,7 +255,7 @@ public class Main {
                 case 1 -> {
                     // Thêm sản phẩm / ghi file
                     productManager.addProduct(selectedCategory, scanner);
-                    fileManager.writeFileCategory(categoryList, projectDirectory);
+                    fileManager.writeFileCategory2(categoryList);
                 }
                 case 2 ->
                     // Hiển thị sản phẩm
@@ -259,12 +263,12 @@ public class Main {
                 case 3 -> {
                     // Cập nhật sản phẩm / ghi file
                     productManager.updateProduct(selectedCategory, scanner);
-                    fileManager.writeFileCategory(categoryList, projectDirectory);
+                    fileManager.writeFileCategory2(categoryList);
                 }
                 case 4 -> {
                     // xoá sản phẩm / ghi file
                     productManager.deleteProduct(selectedCategory, scanner);
-                    fileManager.writeFileCategory(categoryList, projectDirectory);
+                    fileManager.writeFileCategory2(categoryList);
                 }
                 case 5 -> {
                     // sắp xếp sản phẩm từ A-Z

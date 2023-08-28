@@ -24,11 +24,12 @@ public class CategoryManager {
             return category.getName().toLowerCase().equals(input);
         }
     }
+
     private boolean isExistProducts(Category category) {
         boolean isExist = false;
-        if(!category.getProductList().isEmpty()){
-            System.out.println( ColorText.YELLOW_BRIGHT +
-                    "Không thể xoá danh mục hiện có sản phẩm !"+ColorText.RESET);
+        if (!category.getProductList().isEmpty()) {
+            System.out.println(ColorText.YELLOW_BRIGHT +
+                    "Không thể xoá danh mục hiện có sản phẩm !" + ColorText.RESET);
             isExist = true;
         }
         return isExist;
@@ -43,9 +44,9 @@ public class CategoryManager {
     public void displayCategory(List<Category> categoryList) {
         System.out.println("-- Hiện có tổng: " + categoryList.size() + ", danh mục trong kho --");
         // HEAD
-        System.out.println(DesignTable.getBorderCategoryTable());
+        System.out.println(DesignTable.getBorderCategoryTable2());
         System.out.println(DesignTable.getCategoryTitle());
-        System.out.println(DesignTable.getBorderCategoryTable());
+        System.out.println(DesignTable.getBorderCategoryTable2());
         // BODY
 
         for (Category item : categoryList) {
@@ -159,7 +160,7 @@ public class CategoryManager {
                     }
                     for (Category item : categoryList) {
                         if (isInputMatching(item, input)) {
-                            if(!isExistProducts(item)) {
+                            if (!isExistProducts(item)) {
                                 askForDeleteCallBackFunc(item, scanner, categoryList);
                             }
                             isFound = true;

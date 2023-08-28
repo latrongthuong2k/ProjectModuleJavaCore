@@ -114,7 +114,10 @@ public class Product implements IProduct {
         this.categoryId = 0;
     }
 
-    public Product(String id, String name, double importPrice, double exportPrice, double profit, String description, boolean status, int categoryId) {
+    public Product(String id, String name,
+                   double importPrice, double exportPrice,
+                   double profit, String description,
+                   boolean status, int categoryId) {
         this.id = id;
         this.name = name;
         this.importPrice = importPrice;
@@ -135,7 +138,7 @@ public class Product implements IProduct {
     public void inputData(Scanner scanner, List<Product> productList) {
         if (!this.id.isEmpty()) {
             if (askForUpdateData(scanner, "Id")) {
-                inputID(scanner, productList);
+                inputID(scanner, productList); // id
             }
         } else {
             inputID(scanner, productList);
@@ -143,7 +146,7 @@ public class Product implements IProduct {
         //
         if (!this.name.isEmpty()) {
             if (askForUpdateData(scanner, "Name")) {
-                inputName(scanner, productList);
+                inputName(scanner, productList); // name
             }
         } else {
             inputName(scanner, productList);
@@ -151,7 +154,7 @@ public class Product implements IProduct {
         //
         if (!this.description.isEmpty()) {
             if (askForUpdateData(scanner, "description")) {
-                inputDescription(scanner);
+                inputDescription(scanner); // desc
             }
         } else {
             inputDescription(scanner);
@@ -159,7 +162,7 @@ public class Product implements IProduct {
         //
         if (this.importPrice != 0) {
             if (askForUpdateData(scanner, "import")) {
-                inputImportPrice(scanner);
+                inputImportPrice(scanner); // import
             }
         } else {
             inputImportPrice(scanner);
@@ -167,14 +170,14 @@ public class Product implements IProduct {
         //
         if (this.exportPrice != 0) {
             if (askForUpdateData(scanner, "export")) {
-                inputExportPrice(scanner);
+                inputExportPrice(scanner); // exports
             }
         } else {
             inputExportPrice(scanner);
         }
         //
         if (askForUpdateData(scanner, "status")) {
-            inputStatus(scanner);
+            inputStatus(scanner); // status
         }
 
 
@@ -214,6 +217,7 @@ public class Product implements IProduct {
         }
     }
 
+    // input name
     public void inputName(Scanner scanner, List<Product> productList) {
         boolean isExit = false;
         while (!isExit) {
@@ -283,9 +287,11 @@ public class Product implements IProduct {
                 double ExportPrice = Double.parseDouble(inputPrice);
                 // check các điều kiện và thả ra lỗi để đi đến vòng lặp mới
                 if (ExportPrice <= 0) {
-                    throw new RuntimeException("Giá xuất không được nhỏ hơn" + MIN_INTEREST_RATE + "hoặc bằng 0 !");
-                } else if (ExportPrice < MIN_INTEREST_RATE) {
-                    throw new RuntimeException("Giá xuất cần tối thiểu: " + MIN_INTEREST_RATE + " $");
+                    throw new RuntimeException("Giá xuất không được nhỏ hơn" + 120 + "%" + "hoặc bằng 0 !");
+                } else if (ExportPrice < this.importPrice * (MIN_INTEREST_RATE + 1)) {
+                    throw new RuntimeException("Giá xuất cần tối thiểu: " +
+                            String.format("%.2f", this.importPrice * (MIN_INTEREST_RATE + 1))
+                            + " $");
                 }
                 // nếu không lỗi thì gán giá export cho đối tượng và thoát vòng lặp
                 this.exportPrice = ExportPrice;
@@ -301,6 +307,7 @@ public class Product implements IProduct {
 
     }
 
+    // input desc
     public void inputDescription(Scanner scanner) {
         // 商品の説明を入力 : Nhập mô tả
         do {
@@ -319,6 +326,7 @@ public class Product implements IProduct {
         while (true);
     }
 
+    // input status
     public void inputStatus(Scanner scanner) {
         // 状態を入力 : nhập trạng thái
         do {
@@ -343,6 +351,7 @@ public class Product implements IProduct {
         while (true);
     }
 
+    // ask
     private boolean askForUpdateData(Scanner scanner, String nameField) {
         if (nameField.equals("status")) {
             System.out.println("Hiện tại mặt định là ngừng kinh doanh, bạn có muốn chọn lại không");

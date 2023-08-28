@@ -1,0 +1,28 @@
+****Products****
+Product Id: Pada
+Product Name: asdadasds
+Product Description: adasdadsad
+Product Status: false
+Import Price: 10000.0
+Export Price: 20000.0
+Profit: 10000.0
+CategoryId: 0
+
+Product Id: Pdad
+Product Name: dasdasd
+Product Description: adsadsada
+Product Status: false
+Import Price: 10000.0
+Export Price: 20000.0
+Profit: 10000.0
+CategoryId: 0
+
+Product Id: Pdda
+Product Name: dadadadd
+Product Description: adadada
+Product Status: false
+Import Price: 1000.0
+Export Price: 1322.0
+Profit: 322.0
+CategoryId: 0
+

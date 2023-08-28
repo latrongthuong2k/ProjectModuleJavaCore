@@ -11,6 +11,14 @@ public class DesignTable {
                 "+" + border.repeat(22) + "+";
     }
 
+    public static String getBorderCategoryTable2() {
+        String border = "=";
+        return "+" + border.repeat(12) +
+                "+" + border.repeat(22) +
+                "+" + border.repeat(22) +
+                "+" + border.repeat(22) + "+";
+    }
+
     // kung title của bảng categories
     public static String getCategoryTitle() {
         String colorSet = ColorText.WHITE_BOLD_BRIGHT;
@@ -25,6 +33,19 @@ public class DesignTable {
     // Khung viền bảng của category
     public static String getBorderProductTable() {
         String border = "-";
+        return "+" + border.repeat(12) +
+                "+" + border.repeat(22) +
+                "+" + border.repeat(22) +
+                "+" + border.repeat(22) +
+                "+" + border.repeat(22) +
+                "+" + border.repeat(22) +
+                "+" + border.repeat(22) +
+                "+" + border.repeat(22) +
+                "+";
+    }
+
+    public static String getBorderProductTable2() {
+        String border = "=";
         return "+" + border.repeat(12) +
                 "+" + border.repeat(22) +
                 "+" + border.repeat(22) +

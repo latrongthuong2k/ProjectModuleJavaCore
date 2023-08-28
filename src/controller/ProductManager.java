@@ -32,10 +32,10 @@ public class ProductManager {
             // selected category must not Null
             System.out.println("***** Danh sách sản phẩm ở danh mục " + selectedCategory.getName() + " *****");
             // HEAD
-            System.out.println(DesignTable.getBorderProductTable());
+            System.out.println(DesignTable.getBorderProductTable2());
             System.out.println(DesignTable.getProductTitle());
             // BODY
-            System.out.println(DesignTable.getBorderProductTable());
+            System.out.println(DesignTable.getBorderProductTable2());
             for (Product item : selectedCategory.getProductList()) {
                 item.displayData(categoryList);
             }
@@ -82,7 +82,7 @@ public class ProductManager {
             System.out.println("*********** Tiến hành thêm sản phẩm ***********");
 
             for (int i = 0; i < number; i++) {
-                System.out.println(ColorText.WHITE_BRIGHT + "Thêm sản phẩm thứ "+ i + ColorText.RESET);
+                System.out.println(ColorText.WHITE_BRIGHT + "Thêm sản phẩm thứ " + i + ColorText.RESET);
                 Product product = new Product(selectedCategory.getId());
                 product.inputData(scanner, selectedCategory.getProductList());
                 selectedCategory.getProductList().add(product);
@@ -170,7 +170,7 @@ public class ProductManager {
                 for (Product item : selectedCategory.getProductList()) {
                     if (item.getId().equalsIgnoreCase(input) || item.getName().equalsIgnoreCase(input)) {
                         System.out.println(ColorText.GREEN_BRIGHT +
-                                "Đã tìm thấy sản phẩm " +item.getName() + ColorText.RESET);
+                                "Đã tìm thấy sản phẩm " + item.getName() + ColorText.RESET);
 
                         // delete case
                         System.out.println("Bạn có chắc muốn xoá nhấn ( yes/y ) để xoá, hoặc gõ bất kì để thoát");
@@ -246,9 +246,9 @@ public class ProductManager {
             for (Product item : selectedCategory.getProductList()) {
                 if (item.getName().equals(input) || item.getId().equals(input)) {
                     System.out.println("-- Sản phẩm tìm kiếm được là :");
-                    System.out.println(DesignTable.getBorderProductTable());
+                    System.out.println(DesignTable.getBorderProductTable2());
                     System.out.println(DesignTable.getProductTitle());
-                    System.out.println(DesignTable.getBorderProductTable());
+                    System.out.println(DesignTable.getBorderProductTable2());
                     item.displayData(categoryList);
                     System.out.println(DesignTable.getBorderProductTable());
                     found = true;
