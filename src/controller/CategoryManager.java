@@ -24,6 +24,15 @@ public class CategoryManager {
             return category.getName().toLowerCase().equals(input);
         }
     }
+    private boolean isExistProducts(Category category) {
+        boolean isExist = false;
+        if(!category.getProductList().isEmpty()){
+            System.out.println( ColorText.YELLOW_BRIGHT +
+                    "Không thể xoá danh mục hiện có sản phẩm !"+ColorText.RESET);
+            isExist = true;
+        }
+        return isExist;
+    }
 
     /**
      * Phương thức hiển thị toàn bộ các category có trong 1 danh sách của Inventory
@@ -54,7 +63,7 @@ public class CategoryManager {
      * @param categoryList : Danh sách các category của đối tượng Inventory ( Kho )
      */
     public void addCategory(Scanner scanner, List<Category> categoryList) {
-        System.out.print("-- Nhập số lượng cần thêm /  gõ 'exit' để huỷ thêm:");
+        System.out.print("-- Nhập số lượng cần thêm, hoặc  gõ 'exit' để huỷ thêm:");
         String input = scanner.nextLine().toLowerCase();
         int number;
         while (true) {
@@ -78,7 +87,7 @@ public class CategoryManager {
             System.err.println("Số nhập không được nhỏ hơn 1");
             return;
         }
-        /**
+        /*
          * Vòng lặp thêm dựa theo số lượng yêu cầu
          * -> Tạo mới
          * -> Thêm vào categoryList
@@ -150,7 +159,9 @@ public class CategoryManager {
                     }
                     for (Category item : categoryList) {
                         if (isInputMatching(item, input)) {
-                            askForDeleteCallBackFunc(item, scanner, categoryList);
+                            if(!isExistProducts(item)) {
+                                askForDeleteCallBackFunc(item, scanner, categoryList);
+                            }
                             isFound = true;
                         }
                         if (isFound)
@@ -252,12 +263,12 @@ public class CategoryManager {
     }
 
     // 2 phương thức tuỳ chọn dùng thêm để tìm obj
-    private Category findCategoryById(List<Category> categoryList, int id) {
-        return categoryList.stream()
-                .filter(category -> category.getId() == id)
-                .findFirst()
-                .orElse(null);
-    }
+//    private Category findCategoryById(List<Category> categoryList, int id) {
+//        return categoryList.stream()
+//                .filter(category -> category.getId() == id)
+//                .findFirst()
+//                .orElse(null);
+//    }
 
     private Category findCategoryByName(List<Category> categoryList, String name) {
         return categoryList.stream()
