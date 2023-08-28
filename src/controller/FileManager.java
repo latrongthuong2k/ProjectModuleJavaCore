@@ -5,6 +5,7 @@ import imp.Category;
 import imp.Product;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -119,5 +120,69 @@ public class FileManager {
         }
     }
 
+    public void readDataCategory2(InventoryManagement inventoryManagement) {
+        List<Category> categoryList = inventoryManagement.getCategoryList();
+        List<Product> sampleProductList = new ArrayList<>();
+        File file = new File("products.txt");
+        if (!file.exists())
+            return;
+        Product product = null;
+        try (BufferedReader reader = new BufferedReader(new FileReader("products.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith("Product Id: ")) {
+                    product = new Product();
+                    product.setId(getValueFromLine(line, "Product Id: "));
+                } else if (line.startsWith("Product Name: ") && product != null) {
+                    product.setName(getValueFromLine(line, "Product Name: "));
+                } else if (line.startsWith("Product Description: ") && product != null) {
+                    product.setDescription(getValueFromLine(line, "Product Description: "));
+                } else if (line.startsWith("Product Status: ") && product != null) {
+                    product.setStatus(Boolean.parseBoolean(getValueFromLine(line, "Product Status: ")));
+                } else if (line.startsWith("Import Price: ") && product != null) {
+                    product.setImportPrice(Double.parseDouble(getValueFromLine(line, "ImportPrice: ")));
+                } else if (line.startsWith("Export Price: ") && product != null) {
+                    product.setExportPrice(Double.parseDouble(getValueFromLine(line, "ExportPrice: ")));
+                } else if (line.startsWith("Profit: ") && product != null) {
+                    product.setProfit(Double.parseDouble(getValueFromLine(line, "Profit: ")));
+                } else if (line.startsWith("CategoryId: ") && product != null) {
+                    product.setCategoryId(Integer.parseInt(getValueFromLine(line, "CategoryId: ")));
+                } else if (line.trim().isEmpty()) {
+                    sampleProductList.add(product);
+                    product = null;
+                }
+            }
+            for (Category cate : categoryList) {
+                int cateId = cate.getId();
+                cate.getProductList().addAll(sampleProductList.stream()
+                        .filter(prod -> prod.getCategoryId() == cateId)
+                        .toList());
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading from file: " + e.getMessage() + "products.txt");
+        } catch (NullPointerException e) {
+            System.err.println("Lỗi: ");
+        }
+    }
+
+
+    public void writeFileCategory2(List<Category> categoryList) {
+        try (PrintWriter writer = new PrintWriter("categories.txt")) {
+            for (Category category : categoryList) {
+                writer.println("****Category****");
+                writer.println("Id: " + category.getId());
+                writer.println("Name: " + category.getName());
+                writer.println("Description: " + category.getDescription());
+                writer.println("Status: " + category.isStatus());
+                writer.println();
+            }
+            System.out.println("Đã lưu về categories.txt");
+        } catch (IOException e) {
+            System.out.println("Error saving to file: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error" + e.getMessage());
+        }
+    }
     //------------------------------------------------------------------------
+
 }
