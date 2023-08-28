@@ -211,7 +211,14 @@ public class Category implements ICategory {
         while (true);
     }
 
-
+    /**
+     * Phương thức hỏi trước khi update data, việc phải gọi phương thức này cho phép thực
+     * hiện pass input của từng tường dữ liệu bắt buột
+     *
+     * @param scanner
+     * @param nameField
+     * @return
+     */
     public boolean askForUpdateData(Scanner scanner, String nameField) {
         if (nameField.equals("status")) {
             System.out.println("Hiện tại mặt định là InActive, bạn có muốn chọn lại không");

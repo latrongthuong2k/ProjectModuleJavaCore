@@ -25,6 +25,7 @@ public class ProductManager {
      * Phương thức setup bảng và hiển thị toàn bộ sản phẩm ra bảng
      *
      * @param selectedCategory :  tham chiếu đên đối tượng danh mục chọn ở trong kho
+     * @param categoryList     : danh sách chứa các danh mục
      */
     public void displayProduct(Category selectedCategory, List<Category> categoryList) {
         try {
@@ -32,7 +33,7 @@ public class ProductManager {
             System.out.println("***** Danh sách sản phẩm ở danh mục " + selectedCategory.getName() + " *****");
             // HEAD
             System.out.println(DesignTable.getBorderProductTable());
-            System.out.println(DesignTable.getProductTable());
+            System.out.println(DesignTable.getProductTitle());
             // BODY
             System.out.println(DesignTable.getBorderProductTable());
             for (Product item : selectedCategory.getProductList()) {
@@ -51,7 +52,7 @@ public class ProductManager {
      * Phương thức thêm sản phẩm
      *
      * @param selectedCategory : tham chiếu đên đối tượng danh mục chọn ở trong kho
-     * @param scanner          :đối tượng scanner để lấy input
+     * @param scanner          : đối tượng scanner để lấy input
      */
     public void addProduct(Category selectedCategory, Scanner scanner) {
         if (selectedCategory != null) {
@@ -104,6 +105,7 @@ public class ProductManager {
             System.out.print("-- Hãy nhập tên hoặc mã sản phẩm cần tìm để thực hiện cập nhật /" +
                     " hoặc nhập 'exit' để thoát lệnh: ");
 
+            // check empty
             if (selectedCategory.getProductList().isEmpty()) {
                 System.out.println(ColorText.YELLOW_BRIGHT + "Hiện :( không có sản phẩm nào cả ! " +
                         ColorText.RESET);
@@ -245,7 +247,7 @@ public class ProductManager {
                 if (item.getName().equals(input) || item.getId().equals(input)) {
                     System.out.println("-- Sản phẩm tìm kiếm được là :");
                     System.out.println(DesignTable.getBorderProductTable());
-                    System.out.println(DesignTable.getProductTable());
+                    System.out.println(DesignTable.getProductTitle());
                     System.out.println(DesignTable.getBorderProductTable());
                     item.displayData(categoryList);
                     System.out.println(DesignTable.getBorderProductTable());

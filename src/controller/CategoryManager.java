@@ -35,7 +35,7 @@ public class CategoryManager {
         System.out.println("-- Hiện có tổng: " + categoryList.size() + ", danh mục trong kho --");
         // HEAD
         System.out.println(DesignTable.getBorderCategoryTable());
-        System.out.println(DesignTable.getCategoryTable());
+        System.out.println(DesignTable.getCategoryTitle());
         System.out.println(DesignTable.getBorderCategoryTable());
         // BODY
 
@@ -59,6 +59,7 @@ public class CategoryManager {
         int number;
         while (true) {
             try {
+                // input
                 if (input.equals("exit")) {
                     System.out.println(ColorText.YELLOW_BRIGHT + "Đã thoát lệnh thêm" + ColorText.RESET);
                     return;
@@ -66,6 +67,7 @@ public class CategoryManager {
                     number = Integer.parseInt(input);
                 }
                 break;
+                //error
             } catch (NumberFormatException e) {
                 System.err.println("Lỗi: input phải là số !");
             } catch (Exception e) {
@@ -125,8 +127,8 @@ public class CategoryManager {
     /**
      * カテゴリを削除するメソッド
      *
-     * @param scanner      : 入力を受け取るスキャナー
-     * @param categoryList : カテゴリのリスト
+     * @param scanner      : đối tượng scanner
+     * @param categoryList : danh sách category được truyền vào từ Inventory bên ngoài
      */
     public void deleteCategory(Scanner scanner, List<Category> categoryList) {
         // Chạy các logic bên trong nếu categoryList không bị null, null thì thông báo ra
@@ -141,6 +143,7 @@ public class CategoryManager {
             while (!isFound) {
                 input = scanner.nextLine().toLowerCase();
                 try {
+                    // input
                     if (input.equals("exit")) {
                         System.out.println(ColorText.YELLOW_BRIGHT + "Đã thoát lệnh xoá" + ColorText.RESET);
                         return;
@@ -155,6 +158,8 @@ public class CategoryManager {
                     }
                     if (!isFound)
                         System.err.println(" :( Không tìm thấy danh mục :" + input + ", xin hãy nhập lại !");
+
+                    // error
                 } catch (Exception e) {
                     System.out.println("Error" + e.getMessage());
                 }
@@ -246,6 +251,7 @@ public class CategoryManager {
         return foundCategory;
     }
 
+    // 2 phương thức tuỳ chọn dùng thêm để tìm obj
     private Category findCategoryById(List<Category> categoryList, int id) {
         return categoryList.stream()
                 .filter(category -> category.getId() == id)
@@ -260,6 +266,12 @@ public class CategoryManager {
                 .orElse(null);
     }
 
+    /**
+     * Phương thức tìm kiếm category bằng tên ( cũng có thể bằng id )
+     *
+     * @param scanner      : đối tượng scanner
+     * @param categoryList : danh sách các danh mục được lấy từ Inventory
+     */
     public void findCategoryByNameAndDisplay(Scanner scanner, List<Category> categoryList) {
         boolean isFound = false;
         Category selectedCategory;
@@ -267,10 +279,12 @@ public class CategoryManager {
         while (!isFound) {
             String input = scanner.nextLine().toLowerCase();
             try {
+                // input
                 if (input.equals("exit")) {
                     System.out.println(ColorText.YELLOW_BRIGHT + "Đã thoát lệnh tìm kiếm" + ColorText.RESET);
                     return;
                 }
+                // logic
                 selectedCategory = findCategoryByName(categoryList, input);
                 if (selectedCategory == null) {
                     throw new NullPointerException(":( Không tìm thấy Id: " + input + ", xin hãy nhập lại!");
@@ -278,11 +292,12 @@ public class CategoryManager {
                     // kẻ bảng
                     isFound = true;
                     System.out.println(DesignTable.getBorderCategoryTable());
-                    System.out.println(DesignTable.getCategoryTable());
+                    System.out.println(DesignTable.getCategoryTitle());
                     System.out.println(DesignTable.getBorderCategoryTable());
                     selectedCategory.displayData();
                     System.out.println(DesignTable.getBorderCategoryTable());
                 }
+                // error
             } catch (NumberFormatException e) {
                 System.err.println("Lỗi input :" + e.getMessage() + " ?  xin hãy nhập lại");
             } catch (NullPointerException e) {

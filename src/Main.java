@@ -25,12 +25,6 @@ public class Main {
         String projectDirectory = System.getProperty("user.dir");
         // /Users/latrongthuong/Downloads/DataSave/1-WorkSpace/git/JavaCore/LMS-BT/big-project-module-2
 
-        //System.out.println("Thư mục làm việc hiện tại: " + projectDirectory);
-
-        // folder để lưu các productList của đối tượng Category ở dạng .txt
-//        File targetDirectory = new File(projectDirectory + File.separator + "productListRepository");
-//        targetDirectory.mkdir(); // Tạo thư mục nếu chưa tồn tại
-
         // Nạp dữ liệu vào categoryList trong InventoryManagement, từ thư mục ( categoryList.txt ) nếu có
         fileManager.readDataCategory(projectDirectory +
                 File.separator + "repository.txt", inventoryManagement);
@@ -60,12 +54,9 @@ public class Main {
      * @param categoryList        : tham chiếu của categoryList obj
      */
     public static void inventoryManagerMenu(
-            Scanner scanner,
-            InventoryManagement inventoryManagement,
-            CategoryManager categoryManager,
-            ProductManager productManager,
-            FileManager fileManager,
-            List<Category> categoryList,
+            Scanner scanner, InventoryManagement inventoryManagement,
+            CategoryManager categoryManager, ProductManager productManager,
+            FileManager fileManager, List<Category> categoryList,
             String projectDirectory) {
         int choice;
         do {
@@ -118,24 +109,20 @@ public class Main {
         while (true);
     }
 
-
     /**
      * Phương thức mở MENU Category
      *
-     * @param scanner         : ref scanner obj in main
-     * @param categoryManager : ref categoryManager obj in main
-     * @param categoryList    : ref categoryList in main
+     * @param scanner          : đối tượng Scanner
+     * @param categoryManager  : đổi tượng quản lý categories
+     * @param fileManager      : đối tượng quản lý đọc ghi file
+     * @param categoryList     : ref categoryList in main
+     * @param projectDirectory : đường dẫn tương đối của project
      */
-
     public static void goToCategoryManager(
-            Scanner scanner,
-            CategoryManager categoryManager,
-            FileManager fileManager,
-            List<Category> categoryList,
-            String projectDirectory
+            Scanner scanner, CategoryManager categoryManager, FileManager fileManager,
+            List<Category> categoryList, String projectDirectory
     ) {
         int categoryChoice;
-
         // Imp
         do {
             System.out.println(ColorText.CYAN_BRIGHT +
@@ -164,24 +151,21 @@ public class Main {
             }
             scanner.nextLine();
             switch (categoryChoice) {
-                case 1 ->
-                // Thêm danh mục
-                {
+                case 1 -> {
+                    // Thêm danh mục / ghi file
                     categoryManager.addCategory(scanner, categoryList);
                     fileManager.writeFileCategory(categoryList, projectDirectory);
                 }
                 case 2 ->
                     // Hiển thị bảng danh mục
                         categoryManager.displayCategory(categoryList);
-                case 3 ->
-                // Cập nhật danh mục
-                {
+                case 3 -> {
+                    // Cập nhật danh mục / ghi file
                     categoryManager.updateCategory(scanner, categoryList);
                     fileManager.writeFileCategory(categoryList, projectDirectory);
                 }
-                case 4 ->
-                //  Xoá danh mục
-                {
+                case 4 -> {
+                    //  Xoá danh mục / ghi file
                     categoryManager.deleteCategory(scanner, categoryList);
                     fileManager.writeFileCategory(categoryList, projectDirectory);
                 }
@@ -189,14 +173,12 @@ public class Main {
                     // tìm kiếm danh mục theo tên
                     categoryManager.findCategoryByNameAndDisplay(scanner, categoryList);
                 }
-
                 case 6 ->
                     // Quay về kho
                         System.out.println(ColorText.GREEN_BRIGHT +
                                 " Đã quay về kho" + ColorText.RESET);
                 default -> System.err.println(" * Lựa chọn không hợp lệ. Vui lòng chọn lại !");
             }
-
         } while (categoryChoice != 6);
     }
 
@@ -212,15 +194,10 @@ public class Main {
      * @param categoryList        : tham chiếu categoryList được tạo trong main
      */
     public static void goToProductMenu(
-            Scanner scanner,
-            InventoryManagement inventoryManagement,
-            ProductManager productManager,
-            CategoryManager categoryManager,
-            FileManager fileManager,
-            List<Category> categoryList,
-            String projectDirectory
+            Scanner scanner, InventoryManagement inventoryManagement,
+            ProductManager productManager, CategoryManager categoryManager,
+            FileManager fileManager, List<Category> categoryList, String projectDirectory
     ) {
-
         // Instance selectedCategory
         Category selectedCategory = null;
         /**
@@ -271,24 +248,21 @@ public class Main {
                      */
                     selectedCategory = categoryManager.selectCategory(categoryList, scanner);
                 }
-                case 1 ->
-                // Thêm sản phẩm
-                {
+                case 1 -> {
+                    // Thêm sản phẩm / ghi file
                     productManager.addProduct(selectedCategory, scanner);
                     fileManager.writeFileCategory(categoryList, projectDirectory);
                 }
-
                 case 2 ->
-                    // Hiển thị san phẩm
+                    // Hiển thị sản phẩm
                         productManager.displayProduct(selectedCategory, categoryList);
-
                 case 3 -> {
-                    // Cập nhật sản phẩm
+                    // Cập nhật sản phẩm / ghi file
                     productManager.updateProduct(selectedCategory, scanner);
                     fileManager.writeFileCategory(categoryList, projectDirectory);
                 }
                 case 4 -> {
-                    // xoá sản phẩm
+                    // xoá sản phẩm / ghi file
                     productManager.deleteProduct(selectedCategory, scanner);
                     fileManager.writeFileCategory(categoryList, projectDirectory);
                 }
@@ -299,7 +273,6 @@ public class Main {
                 case 6 -> {
                     // sắp xếp sản phẩm theo lợi nhuận từ thấp đến cao
                     productManager.sortProductByProfitHighToLow(selectedCategory);
-
                 }
                 case 7 -> {
                     // Tìm sản phẩm theo tên
