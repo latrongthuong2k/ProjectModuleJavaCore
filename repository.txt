@@ -1,0 +1,56 @@
+****Category****
+Id: 0
+Name: sach toan
+Description: sách lớp 6 - 12
+Status: true
+
+****Products****
+[
+Product Id: P612
+Product Name: Sách toán lớp 6
+Product Description: Sách ok
+Product Status: true
+Import Price: 5000.0
+Export Price: 2000.0
+Profit: -3000.0
+CategoryId: 0
+
+Product Id: P007
+Product Name: Sách toán lớp 7
+Product Description: Sách ok
+Product Status: true
+Import Price: 3000.0
+Export Price: 5000.0
+Profit: 2000.0
+CategoryId: 0
+
+Product Id: P008
+Product Name: Sách toán lớp 8
+Product Description: sách ok
+Product Status: false
+Import Price: 1000.0
+Export Price: 10000.0
+Profit: 9000.0
+CategoryId: 0
+
+Product Id: Pbbb
+Product Name: NewItem
+Product Description: NEwww
+Product Status: false
+Import Price: 1000.0
+Export Price: 999.0
+Profit: -1.0
+CategoryId: 0
+
+]
+
+****Category****
+Id: 1
+Name: Sách văn
+Description: Sách văn 6-12
+Status: false
+
+****Products****
+[
+]
+
