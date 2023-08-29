@@ -84,39 +84,39 @@ public class FileManager {
     //------------------------------------------------------------------------
 
 
-    public void writeFileCategory(List<Category> categoryList,
-                                  String projectDirectory) {
-        try (PrintWriter writer = new PrintWriter("repository.txt")) {
-
-            for (Category category : categoryList) {
-                writer.println("****Category****");
-                writer.println("Id: " + category.getId());
-                writer.println("Name: " + category.getName());
-                writer.println("Description: " + category.getDescription());
-                writer.println("Status: " + category.isStatus());
-                writer.println();
-                writer.println("****Products****");
-                writer.println("[");
-                category.getProductList().stream()
-                        .map(product -> "Product Id: " + product.getId() +
-                                "\nProduct Name: " + product.getName() +
-                                "\nProduct Description: " + product.getDescription() +
-                                "\nProduct Status: " + product.isStatus() +
-                                "\nImport Price: " + product.getImportPrice() +
-                                "\nExport Price: " + product.getExportPrice() +
-                                "\nProfit: " + product.getProfit() +
-                                "\nCategoryId: " + product.getCategoryId() + "\n")
-                        .forEach(writer::println);
-                writer.println("]");
-                writer.println();
-            }
-            System.out.println("Đã lưu về repository.txt");
-        } catch (IOException e) {
-            System.out.println("Error saving to file: " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("Error" + e.getMessage());
-        }
-    }
+//    public void writeFileCategory(List<Category> categoryList,
+//                                  String projectDirectory) {
+//        try (PrintWriter writer = new PrintWriter("repository.txt")) {
+//
+//            for (Category category : categoryList) {
+//                writer.println("****Category****");
+//                writer.println("Id: " + category.getId());
+//                writer.println("Name: " + category.getName());
+//                writer.println("Description: " + category.getDescription());
+//                writer.println("Status: " + category.isStatus());
+//                writer.println();
+//                writer.println("****Products****");
+//                writer.println("[");
+//                category.getProductList().stream()
+//                        .map(product -> "Product Id: " + product.getId() +
+//                                "\nProduct Name: " + product.getName() +
+//                                "\nProduct Description: " + product.getDescription() +
+//                                "\nProduct Status: " + product.isStatus() +
+//                                "\nImport Price: " + product.getImportPrice() +
+//                                "\nExport Price: " + product.getExportPrice() +
+//                                "\nProfit: " + product.getProfit() +
+//                                "\nCategoryId: " + product.getCategoryId() + "\n")
+//                        .forEach(writer::println);
+//                writer.println("]");
+//                writer.println();
+//            }
+//            System.out.println("Đã lưu về repository.txt");
+//        } catch (IOException e) {
+//            System.out.println("Error saving to file: " + e.getMessage());
+//        } catch (Exception e) {
+//            System.out.println("Error" + e.getMessage());
+//        }
+//    }
 
     //
     public void readDataProduct(InventoryManagement inventoryManagement) {

@@ -112,10 +112,8 @@ public class Category implements ICategory {
         System.out.print("-- Nhập tên danh mục 6 - 30 ký tự: ");
         do {
             String name = scanner.nextLine();
-            /**
-             * Check kiểm tra tên danh mục nếu có lỗi thì chạy vòng lặp khác và
-             * yêu cầu nhập lại
-             */
+            // Check kiểm tra tên danh mục nếu có lỗi thì chạy vòng lặp khác và
+            // yêu cầu nhập lại
             if (name.isEmpty()) {
                 System.err.println("Lỗi : *_* Tên danh mục không được trống. Xin hãy nhập lại ! ");
                 continue;
@@ -125,9 +123,7 @@ public class Category implements ICategory {
             }
             boolean nameExists = false;
 
-            /**
-             * Nếu danh mục đã có những sản phẩm khác thì tiến hành so sánh trùng lặp
-             */
+            // Nếu danh mục đã có những sản phẩm khác thì tiến hành so sánh trùng lặp
             if (!categoryList.isEmpty()) {
                 for (Category item : categoryList) {
                     if (item.getName().equals(name)) {
@@ -163,14 +159,10 @@ public class Category implements ICategory {
             try {
                 this.description = scanner.nextLine();
                 if (description.isEmpty()) {
-                    /**
-                     * Ném ra lỗi và chạy đến lại vòng lặp hỏi mới
-                     */
+                    // Ném ra lỗi và chạy đến lại vòng lặp hỏi mới
                     throw new RuntimeException(" *_* Mô tả không được để trống. Xin hãy nhập lại ! ");
                 }
-                /**
-                 * Nếu không có lỗi gì thì thoát vòng lặp
-                 */
+                // Nếu không có lỗi gì thì thoát vòng lặp
                 break;
             } catch (RuntimeException e) {
                 System.err.println("Lỗi: " + e.getMessage());
@@ -193,14 +185,11 @@ public class Category implements ICategory {
                 else if (input.equals("false"))
                     this.status = false;
                 else {
-                    /**
-                     * Ném ra lỗi và chạy lại đến vòng lặp hỏi mới
-                     */
+                    // Ném ra lỗi và chạy lại đến vòng lặp hỏi mới
                     throw new Exception(" *_* Input không đúng yêu cầu. Xin hãy nhập lại !");
                 }
-                /**
-                 * Nếu không có lỗi thì thoát vòng lặp
-                 */
+
+                // Nếu không có lỗi thì thoát vòng lặp
                 break;
             } catch (RuntimeException e) {
                 System.err.println("Lỗi: " + e.getMessage());
@@ -215,9 +204,9 @@ public class Category implements ICategory {
      * Phương thức hỏi trước khi update data, việc phải gọi phương thức này cho phép thực
      * hiện pass input của từng tường dữ liệu bắt buột
      *
-     * @param scanner
-     * @param nameField
-     * @return
+     * @param scanner   : đối tượng scanner
+     * @param nameField : tên trường truyền vào để hiển thị
+     * @return : trả về boolean cho việc đồng ý hay không
      */
     public boolean askForUpdateData(Scanner scanner, String nameField) {
         if (nameField.equals("status")) {
@@ -254,7 +243,7 @@ public class Category implements ICategory {
         // ID、名前、説明、ステータスの情報を表示します
         String colorTrue = ColorText.YELLOW_BRIGHT;
         String colorFalse = ColorText.GREEN_BRIGHT;
-        String selectColor = null;
+        String selectColor;
         String colorR = ColorText.RESET;
         if (status)
             selectColor = colorTrue;

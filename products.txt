@@ -26,3 +26,12 @@ Export Price: 1322.0
 Profit: 322.0
 CategoryId: 0
 
+Product Id: Pdad
+Product Name: ádasdasd
+Product Description: ádsadasdad
+Product Status: true
+Import Price: 2000.0
+Export Price: 2500.0
+Profit: 500.0
+CategoryId: 0
+

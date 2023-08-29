@@ -44,10 +44,11 @@ public class CategoryManager {
     public void displayCategory(List<Category> categoryList) {
         System.out.println("-- Hiện có tổng: " + categoryList.size() + ", danh mục trong kho --");
         // HEAD
-        System.out.println(DesignTable.getBorderCategoryTable2());
+        System.out.println(DesignTable.getBorderCategoryTable());
         System.out.println(DesignTable.getCategoryTitle());
-        System.out.println(DesignTable.getBorderCategoryTable2());
+        System.out.println(DesignTable.getBorderCategoryTable());
         // BODY
+
 
         for (Category item : categoryList) {
             item.displayData();
@@ -271,12 +272,12 @@ public class CategoryManager {
 //                .orElse(null);
 //    }
 
-    private Category findCategoryByName(List<Category> categoryList, String name) {
-        return categoryList.stream()
-                .filter(category -> category.getName().equalsIgnoreCase(name))
-                .findFirst()
-                .orElse(null);
-    }
+//    private Category findCategoryByName(List<Category> categoryList, String name) {
+//        return categoryList.stream()
+//                .filter(category -> category.getName().equalsIgnoreCase(name))
+//                .findFirst()
+//                .orElse(null);
+//    }
 
     /**
      * Phương thức tìm kiếm category bằng tên ( cũng có thể bằng id )
@@ -285,10 +286,12 @@ public class CategoryManager {
      * @param categoryList : danh sách các danh mục được lấy từ Inventory
      */
     public void findCategoryByNameAndDisplay(Scanner scanner, List<Category> categoryList) {
-        boolean isFound = false;
-        Category selectedCategory;
-        System.out.println("Nhập tên danh mục để tìm kiếm, hoặc nhập 'exit' để thoát lệnh :");
-        while (!isFound) {
+        if (categoryList.isEmpty()) {
+            System.err.println("Chưa có danh mục nào để hiển thị !");
+            return;
+        }
+        System.out.println("Nhập tên danh mục để tìm kiếm, hoặc nhập 'exit' để thoát tìm kiếm :");
+        while (true) {
             String input = scanner.nextLine().toLowerCase();
             try {
                 // input
@@ -297,18 +300,16 @@ public class CategoryManager {
                     return;
                 }
                 // logic
-                selectedCategory = findCategoryByName(categoryList, input);
-                if (selectedCategory == null) {
-                    throw new NullPointerException(":( Không tìm thấy Id: " + input + ", xin hãy nhập lại!");
-                } else {
-                    // kẻ bảng
-                    isFound = true;
-                    System.out.println(DesignTable.getBorderCategoryTable());
-                    System.out.println(DesignTable.getCategoryTitle());
-                    System.out.println(DesignTable.getBorderCategoryTable());
-                    selectedCategory.displayData();
-                    System.out.println(DesignTable.getBorderCategoryTable());
-                }
+
+                List<Category> filteredListCategory = categoryList.stream()
+                        .filter(category -> category.getName().toLowerCase().contains(input)).toList();
+                // kẻ bảng
+                System.out.println(DesignTable.getBorderCategoryTable());
+                System.out.println(DesignTable.getCategoryTitle());
+                System.out.println(DesignTable.getBorderCategoryTable());
+                filteredListCategory.forEach(Category::displayData);
+                System.out.println(DesignTable.getBorderCategoryTable());
+                System.out.println("Bạn có thể nhập tên danh mục khác để tìm kiếm, hoặc nhập 'exit' để thoát :");
                 // error
             } catch (NumberFormatException e) {
                 System.err.println("Lỗi input :" + e.getMessage() + " ?  xin hãy nhập lại");

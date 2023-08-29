@@ -394,10 +394,25 @@ public class Product implements IProduct {
             if (categoryId == ct.getId())
                 nameCategory = ct.getName();
         }
-        /**
-         * Bản hiển thị sản phẩm
-         */
-        System.out.printf("| %-10s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s | %-20s |\n",
+
+        // Bản hiển thị sản phẩm
+        String yellowBright = ColorText.YELLOW_BRIGHT;
+        String greenBright = ColorText.GREEN_BRIGHT;
+        String cyanBright = ColorText.CYAN_BRIGHT;
+        String colorReset = ColorText.RESET;
+        String colorDepend;
+        if (this.status)
+            colorDepend = greenBright;
+        else
+            colorDepend = yellowBright;
+        System.out.printf("|" + cyanBright + " %-10s " + colorReset +
+                        "| %-20s " +
+                        "| %-20s " +
+                        "| %-20s " +
+                        "| %-20s " +
+                        "| %-20s " +
+                        "|" + colorDepend + " %-20s " + colorReset +
+                        "| %-20s |\n",
                 id,
                 name,
                 String.format("%.2f", importPrice) + " $",
