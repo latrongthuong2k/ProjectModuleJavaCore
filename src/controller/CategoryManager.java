@@ -25,7 +25,7 @@ public class CategoryManager {
         }
     }
 
-    private boolean isExistProducts(Category category) {
+    private boolean isHasProducts(Category category) {
         boolean isExist = false;
         if (!category.getProductList().isEmpty()) {
             System.out.println(ColorText.YELLOW_BRIGHT +
@@ -141,44 +141,46 @@ public class CategoryManager {
      * @param scanner      : đối tượng scanner
      * @param categoryList : danh sách category được truyền vào từ Inventory bên ngoài
      */
-    public void deleteCategory(Scanner scanner, List<Category> categoryList) {
+    public boolean deleteCategory(Scanner scanner, List<Category> categoryList) {
         // Chạy các logic bên trong nếu categoryList không bị null, null thì thông báo ra
-        if (!categoryList.isEmpty()) {
-
-            // 削除対象のカテゴリのIDまたは名前を入力 : Nhập tên hoặc id để tìm kiếm rồi xoá
-            System.out.print("-- Nhập Id hoặc tên danh mục cần xoá, hoặc nhập 'exit' để thoát lệnh': ");
-            String input;
-            boolean isFound = false;
-
-            // 入力を受け取るループ : vòng lặp tìm kiếm
-            while (!isFound) {
-                input = scanner.nextLine().toLowerCase();
-                try {
-                    // input
-                    if (input.equals("exit")) {
-                        System.out.println(ColorText.YELLOW_BRIGHT + "Đã thoát lệnh xoá" + ColorText.RESET);
-                        return;
-                    }
-                    for (Category item : categoryList) {
-                        if (isInputMatching(item, input)) {
-                            if (!isExistProducts(item)) {
-                                askForDeleteCallBackFunc(item, scanner, categoryList);
-                            }
-                            isFound = true;
-                        }
-                        if (isFound)
-                            break;
-                    }
-                    if (!isFound)
-                        System.err.println(" :( Không tìm thấy danh mục :" + input + ", xin hãy nhập lại !");
-
-                    // error
-                } catch (Exception e) {
-                    System.out.println("Error" + e.getMessage());
-                }
-            }
-        } else
+        if (categoryList.isEmpty()) {
             System.err.println("Chưa có danh mục nào để xoá ! :( ");
+            return false;
+        }
+        // 削除対象のカテゴリのIDまたは名前を入力 : Nhập tên hoặc id để tìm kiếm rồi xoá
+        System.out.print("-- Nhập Id hoặc tên danh mục cần xoá, hoặc nhập 'exit' để thoát lệnh': ");
+        String input;
+        boolean productListOfCategoryIsEmpty = true; // không có sản phẩm
+        boolean isFound = false;
+
+        // 入力を受け取るループ : vòng lặp tìm kiếm
+        while (!isFound) {
+            input = scanner.nextLine().toLowerCase();
+            try {
+                // input
+                if (input.equals("exit")) {
+                    System.out.println(ColorText.YELLOW_BRIGHT + "Đã thoát lệnh xoá" + ColorText.RESET);
+                    return false;
+                }
+                for (Category item : categoryList) {
+                    if (isInputMatching(item, input)) {
+                        if (!isHasProducts(item)) { // không có sản phẩm nào -> xoá
+                            askForDeleteCallBackFunc(item, scanner, categoryList);
+                        } else // có sản phẩm -> no
+                            productListOfCategoryIsEmpty = false; // có sp
+                        isFound = true;
+                    }
+                    if (isFound)
+                        break;
+                }
+                if (!isFound)
+                    System.err.println(" :( Không tìm thấy danh mục :" + input + ", xin hãy nhập lại !");
+                // error
+            } catch (Exception e) {
+                System.out.println("Error" + e.getMessage());
+            }
+        }
+        return productListOfCategoryIsEmpty;
     }
 
 

@@ -161,8 +161,8 @@ public class Main {
                 }
                 case 4 -> {
                     //  Xoá danh mục / ghi file
-                    categoryManager.deleteCategory(scanner, categoryList);
-                    fileManager.writeFileCategory2(categoryList);
+                    if (categoryManager.deleteCategory(scanner, categoryList))
+                        fileManager.writeFileCategory2(categoryList);
                 }
                 case 5 ->
                     // tìm kiếm danh mục theo tên
