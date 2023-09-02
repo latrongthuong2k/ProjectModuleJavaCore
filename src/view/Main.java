@@ -63,11 +63,12 @@ public class Main {
             FileManager fileManager, List<Category> categoryList) {
         int choice;
         do {
-            System.out.println(ColorText.YELLOW_BRIGHT + "************ MENU INVENTORY ************");
-            System.out.println("* 1. Quản lý danh mục sản phẩm");
-            System.out.println("* 2. Quản lý sản phẩm");
-            System.out.println("* 3. Thoát");
-            System.out.println("******************************");
+            System.out.println(ColorText.YELLOW_BRIGHT +
+                    "************ MENU INVENTORY ************\n" +
+                    "* 1. Quản lý danh mục sản phẩm\n" +
+                    "* 2. Quản lý sản phẩm\n" +
+                    "* 3. Thoát\n" +
+                    "****************************************");
             System.out.println();
             System.out.print("Chọn một chức năng (1-3): " + ColorText.RESET);
             /**
@@ -127,8 +128,9 @@ public class Main {
                     "* 3. Cập nhật danh mục\n" +
                     "* 4. Xóa danh mục (Danh mục chưa chứa sản phẩm)\n" +
                     "* 5. Tìm kiếm danh mục theo tên\n" +
-                    "* 6. Thoát (Quay lại kho)");
-            System.out.println("*****************************************************************");
+                    "* 6. Thoát (Quay lại kho)\n" +
+                    "*************************************************************");
+
             System.out.println();
             System.out.print("Chọn một chức năng (1-6): " + ColorText.RESET);
 
@@ -207,18 +209,17 @@ public class Main {
         do {
             System.out.println("""
                      ----------------- PRODUCT MENU -----------------
-                     * 0. Chọn danh mục muốn vào
                      * 1. Thêm mới sản phẩm
                      * 2. Hiển thị thông tin sản phẩm
-                     * 3. Cập nhật sản phẩm 
-                     * 4. Xóa sản phẩm 
-                     * 5. Hiển thị sản phẩm theo A-Z
-                     * 6. Hiển thị sản phẩm theo lợi nhuận cao-thấp
+                     * 3. Cập nhật sản phẩm
+                     * 4. Xóa sản phẩm
+                     * 5. Hiển thị tên sản phẩm theo A-Z
+                     * 6. Hiển thị giá sản phẩm theo lợi nhuận cao-thấp
                      * 7. Tìm kiếm sản phẩm
                      * 8. Thoát (Quay lại kho)
                     -------------------------------------------------
                      """);
-            System.out.print("-- Chọn một chức năng (0-8): ");
+            System.out.print("-- Chọn một chức năng (1-8): ");
             /**
              * Nhập lệnh
              * -> check phải là số
@@ -229,42 +230,41 @@ public class Main {
                     break;
                 } else {
                     System.err.println(" * Lệnh chọn không hợp lệ! Vui lòng nhập số.");
+                    scanner.nextLine();
                 }
             }
             scanner.nextLine(); // xoá bộ nhớ đệm scanner
             switch (productChoice) {
-                case 0 -> {
-                    System.out.println("------------- Danh sách danh mục -------------");
-                    /**
-                     * selectedCategory sẽ tham chiếu đến một item bên trong categoryList
-                     * mà hàm selectCategory đã trả về sau khi lọc từ categoryList
-                     */
-                    selectedCategory = categoryManager.selectCategory(categoryList, scanner);
-                }
                 case 1 -> {
+                    // chọn danh mục để thêm
+                    selectedCategory = categoryManager.selectCategory(categoryList, scanner);
                     // Thêm sản phẩm / ghi file
-                    productManager.addProduct(selectedCategory, scanner);
+                    productManager.addProduct(selectedCategory, categoryList, scanner);
                     fileManager.writeFileCategory2(categoryList);
                 }
                 case 2 ->
                     // Hiển thị sản phẩm
-                        productManager.displayProduct(selectedCategory, categoryList);
+                        productManager.displayProduct(categoryList);
                 case 3 -> {
+                    // chọn danh mục để cập nhật
+                    selectedCategory = categoryManager.selectCategory(categoryList, scanner);
                     // Cập nhật sản phẩm / ghi file
-                    productManager.updateProduct(selectedCategory, scanner);
+                    productManager.updateProduct(selectedCategory, scanner, categoryList);
                     fileManager.writeFileCategory2(categoryList);
                 }
                 case 4 -> {
+                    // chọn danh mục để xoá
+                    selectedCategory = categoryManager.selectCategory(categoryList, scanner);
                     // xoá sản phẩm / ghi file
                     productManager.deleteProduct(selectedCategory, scanner);
                     fileManager.writeFileCategory2(categoryList);
                 }
                 case 5 ->
-                    // sắp xếp sản phẩm từ A-Z
-                        productManager.sortProductByNameAToZ(selectedCategory);
+                    // sắp xếp tên sản phẩm từ A-Z
+                        productManager.sortProductByNameAToZ(categoryList);
                 case 6 ->
-                    // sắp xếp sản phẩm theo lợi nhuận từ thấp đến cao
-                        productManager.sortProductByProfitHighToLow(selectedCategory);
+                    // sắp xếp giá sản phẩm theo lợi nhuận từ thấp đến cao
+                        productManager.sortProductByProfitHighToLow(categoryList);
                 case 7 ->
                     // Tìm sản phẩm theo tên
                         productManager.findProductByName(selectedCategory, categoryList, scanner);
@@ -272,7 +272,7 @@ public class Main {
                     // trở về kho
                         System.out.println(ColorText.GREEN_BRIGHT +
                                 " Đã quay về kho" + ColorText.RESET);
-                default -> System.out.println(" Lựa chọn không hợp lệ. Vui lòng chọn lại ! ");
+                default -> System.err.println(" Lựa chọn không hợp lệ. Vui lòng chọn lại ! ");
             }
         }
         while (productChoice != 8);

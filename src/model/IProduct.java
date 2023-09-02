@@ -9,7 +9,7 @@ import java.util.Scanner;
 public interface IProduct {
     float MIN_INTEREST_RATE = 0.2f;
 
-    void inputData(Scanner scanner, List<Product> productList);
+    void inputData(Scanner scanner, List<Product> productList, List<Category> categoryList);
 
     void displayData(List<Category> categoryList);
 

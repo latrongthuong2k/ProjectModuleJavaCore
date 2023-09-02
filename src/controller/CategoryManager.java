@@ -2,7 +2,9 @@ package controller;
 
 
 import imp.Category;
+import imp.Product;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -29,7 +31,7 @@ public class CategoryManager {
         boolean isExist = false;
         if (!category.getProductList().isEmpty()) {
             System.out.println(ColorText.YELLOW_BRIGHT +
-                    "Không thể xoá danh mục hiện có sản phẩm !" + ColorText.RESET);
+                    "Không thể xoá danh mục hiện đang có sản phẩm !" + ColorText.RESET);
             isExist = true;
         }
         return isExist;
@@ -42,13 +44,16 @@ public class CategoryManager {
      */
 
     public void displayCategory(List<Category> categoryList) {
-        System.out.println("-- Hiện có tổng: " + categoryList.size() + ", danh mục trong kho --");
+        if (categoryList.isEmpty()) {
+            System.err.println("Chưa có danh mục nào để hiển thị !");
+            return;
+        }
+        System.out.println(DesignTable.statisticForTableCategory(categoryList.size()));
         // HEAD
         System.out.println(DesignTable.getBorderCategoryTable());
         System.out.println(DesignTable.getCategoryTitle());
         System.out.println(DesignTable.getBorderCategoryTable());
         // BODY
-
 
         for (Category item : categoryList) {
             item.displayData();
@@ -65,11 +70,12 @@ public class CategoryManager {
      * @param categoryList : Danh sách các category của đối tượng Inventory ( Kho )
      */
     public void addCategory(Scanner scanner, List<Category> categoryList) {
-        System.out.print("-- Nhập số lượng cần thêm, hoặc  gõ 'exit' để huỷ thêm:");
-        String input = scanner.nextLine().toLowerCase();
-        int number;
-        while (true) {
+        System.out.print("-- Nhập số lượng cần thêm, hoặc  gõ 'exit' để huỷ thêm: ");
+        int number = 0;
+        boolean isNumber = false;
+        while (!isNumber) {
             try {
+                String input = scanner.nextLine().toLowerCase().trim();
                 // input
                 if (input.equals("exit")) {
                     System.out.println(ColorText.YELLOW_BRIGHT + "Đã thoát lệnh thêm" + ColorText.RESET);
@@ -77,17 +83,16 @@ public class CategoryManager {
                 } else {
                     number = Integer.parseInt(input);
                 }
-                break;
+                if (number <= 0) {
+                    throw new Exception("Số lượng không được <= 0 ");
+                }
+                isNumber = true;
                 //error
             } catch (NumberFormatException e) {
-                System.err.println("Lỗi: input phải là số !");
+                System.err.println("Lỗi: số lượng phải là số nguyên dương !");
             } catch (Exception e) {
-                System.out.println("Error" + e.getMessage());
+                System.err.println("Error" + e.getMessage());
             }
-        }
-        if (number < 0) {
-            System.err.println("Số nhập không được nhỏ hơn 1");
-            return;
         }
         /*
          * Vòng lặp thêm dựa theo số lượng yêu cầu
@@ -99,7 +104,7 @@ public class CategoryManager {
             Category category = new Category();
             category.inputData(scanner, categoryList);
             categoryList.add(category);
-            System.out.println(ColorText.GREEN_BRIGHT + "Thêm thành công ^_^ " + ColorText.RESET);
+            System.out.println(ColorText.GREEN_BRIGHT + "-- Thêm thành công ^_^ -- " + ColorText.RESET);
         }
     }
 
@@ -115,24 +120,35 @@ public class CategoryManager {
             System.err.println("Chưa có danh mục nào để cập nhật !");
             return;
         }
-        System.out.print("-- Nhập tên hoặc id của category để cập nhật, " +
+        System.out.print("-- Nhập 'Tên' hoặc 'Id' của category để cập nhật, " +
                 "hoặc nhập 'exit' để thoát lệnh: ");
-        String input = scanner.nextLine().toLowerCase();
-        if (input.equals("exit")) {
-            System.out.println(ColorText.GREEN_BRIGHT + "Đã thoát lệnh cập nhật" + ColorText.RESET);
-            return;
-        }
-
-        for (Category item : categoryList) {
-            if (isInputMatching(item, input)) {
-                System.out.println(ColorText.GREEN_BRIGHT + "Đã tìm thấy danh mục, " +
-                        "tiến hành cập nhật" + ColorText.RESET);
-                item.inputData(scanner, categoryList);
-                return;
+        boolean found = false;
+        while (!found) {
+            String input = scanner.nextLine().toLowerCase().trim();
+            try {
+                // Thoát
+                if (input.equals("exit")) {
+                    System.out.println(ColorText.YELLOW_BRIGHT + "Đã thoát lệnh cập nhật" + ColorText.RESET);
+                    return;
+                }
+                // Dò tìm
+                for (Category item : categoryList) {
+                    if (isInputMatching(item, input)) {
+                        System.out.println(ColorText.WHITE_BRIGHT + "Đã tìm thấy danh mục tên: "
+                                + ColorText.GREEN_BRIGHT + item.getName() +
+                                ", bắt đầu tiến hành cập nhật" + ColorText.RESET);
+                        item.inputData(scanner, categoryList);
+                        return;
+                    }
+                }
+                if (!found)
+                    System.err.println("Không có category 'Id' hoặc 'Tên': " + input + ", " +
+                            "xin vui lòng nhập lại hoặc nhập 'exit' để thoát !");
+                // không tìm được
+            } catch (RuntimeException e) {
+                System.err.println("Lỗi: " + e.getMessage());
             }
         }
-
-        System.err.println("Không có category Id hoặc tên: " + input + ", xin vui lòng nhập lại !");
     }
 
     /**
@@ -147,21 +163,21 @@ public class CategoryManager {
             System.err.println("Chưa có danh mục nào để xoá ! :( ");
             return false;
         }
-        // 削除対象のカテゴリのIDまたは名前を入力 : Nhập tên hoặc id để tìm kiếm rồi xoá
-        System.out.print("-- Nhập Id hoặc tên danh mục cần xoá, hoặc nhập 'exit' để thoát lệnh': ");
+        System.out.print("-- Nhập 'Id' hoặc 'Tên' danh mục cần xoá, hoặc nhập 'exit' để thoát lệnh': ");
         String input;
         boolean productListOfCategoryIsEmpty = true; // không có sản phẩm
         boolean isFound = false;
 
         // 入力を受け取るループ : vòng lặp tìm kiếm
         while (!isFound) {
-            input = scanner.nextLine().toLowerCase();
+            input = scanner.nextLine().toLowerCase().trim();
             try {
                 // input
                 if (input.equals("exit")) {
                     System.out.println(ColorText.YELLOW_BRIGHT + "Đã thoát lệnh xoá" + ColorText.RESET);
                     return false;
                 }
+                // find category
                 for (Category item : categoryList) {
                     if (isInputMatching(item, input)) {
                         if (!isHasProducts(item)) { // không có sản phẩm nào -> xoá
@@ -174,10 +190,11 @@ public class CategoryManager {
                         break;
                 }
                 if (!isFound)
-                    System.err.println(" :( Không tìm thấy danh mục :" + input + ", xin hãy nhập lại !");
+                    System.err.println(" :( Không tìm thấy danh mục :" + input + ", " +
+                            "xin hãy nhập lại hoặc nhập 'exit' để thoát !");
                 // error
             } catch (Exception e) {
-                System.out.println("Error" + e.getMessage());
+                System.err.println("Error" + e.getMessage());
             }
         }
         return productListOfCategoryIsEmpty;
@@ -193,24 +210,24 @@ public class CategoryManager {
      */
     public void askForDeleteCallBackFunc(Category item, Scanner scanner, List<Category> categoryList) {
 
-        System.out.println(ColorText.GREEN_BRIGHT +
-                "Đã tìm thấy danh mục tên: " + item.getName() + ColorText.RESET);
+        System.out.println(ColorText.WHITE_BRIGHT +
+                "Đã tìm thấy danh mục tên: " + ColorText.GREEN_BRIGHT + item.getName() + ColorText.RESET);
         System.out.print(ColorText.YELLOW_BRIGHT +
                 "Bạn có chắc muốn xoá nhấn ( yes ) để xoá, hoặc ( no ) để thoát lệnh: " + ColorText.RESET);
         do {
-            String command = scanner.nextLine().toLowerCase();
+            String command = scanner.nextLine().toLowerCase().trim();
 
             if (command.equals("yes")) {
                 categoryList.remove(item);
                 System.out.println(ColorText.GREEN_BRIGHT +
-                        " ^_^  Đã xoá danh mục tên: " + item.getName() + ColorText.RESET);
+                        "Đã xoá danh mục tên: " + item.getName() + ColorText.RESET);
                 break;
             } else if (command.equals("no")) {
                 System.out.println(ColorText.GREEN_BRIGHT +
-                        " *_*  Đã huỷ lệnh xoá " + ColorText.RESET + item.getName());
+                        "Đã huỷ lệnh xoá " + ColorText.RESET + item.getName());
                 break;
             } else {
-                System.err.println(" *_* Nhập không đúng lệnh, hãy nhập lại lệnh ( yes or no ) ");
+                System.err.println(" *_* Nhập không đúng lệnh, hãy nhập lại lệnh ( yes / no ) ");
             }
         } while (true);
     }
@@ -226,21 +243,24 @@ public class CategoryManager {
             System.err.println("Chưa có danh mục nào để chọn! :(");
             return null;
         }
-
-        System.out.println("-- Hiện tại có " + categoryList.size() + " danh mục trong shop --");
-        for (Category item : categoryList) {
-            System.out.println(ColorText.WHITE_BRIGHT + "Danh mục ( " + item.getName() +
-                    " ) có id là ( " + item.getId() + " )" + ColorText.RESET);
-        }
+        // statistic
+        System.out.println(DesignTable.statisticForTableCategory(categoryList.size()));
+        // bảng
+        System.out.println(DesignTable.getBorderCategoryTable());
+        System.out.println(DesignTable.getCategoryTitle());
+        System.out.println(DesignTable.getBorderCategoryTable());
+        categoryList.forEach(Category::displayData);
+        System.out.println(DesignTable.getBorderCategoryTable());
+        //
         boolean isFound = false;
         Category foundCategory = null;
-        System.out.println("Nhập Id hoặc tên danh mục để vào, hoặc nhập 'exit' để thoát lệnh :");
+        System.out.println("Nhập 'Tên' hoặc 'Id' danh mục để thực hiện thao tác, hoặc nhập 'exit' để thoát lệnh :");
         while (!isFound) {
-            String input = scanner.nextLine().toLowerCase();
+            String input = scanner.nextLine().toLowerCase().trim();
             try {
                 // Khi nhập exit để thoát lệnh
                 if (input.equals("exit")) {
-                    System.out.println(ColorText.GREEN_BRIGHT + "Đã thoát lệnh tìm kiếm" + ColorText.RESET);
+                    System.out.println(ColorText.YELLOW_BRIGHT + "Đã thoát lệnh chọn danh mục" + ColorText.RESET);
                     return null;
                 }
                 for (Category item : categoryList) {
@@ -259,10 +279,25 @@ public class CategoryManager {
             }
             if (foundCategory != null) {
                 // thông báo tìm được xong và check true để thoát khỏi vòng lặp
-                System.out.println(ColorText.GREEN_BOLD_BRIGHT + "Danh mục hiện tại đang chọn là : "
-                        + foundCategory.getName() + ColorText.RESET);
+                System.out.println(ColorText.WHITE_BRIGHT + "Danh mục hiện tại đang chọn là : "
+                        + ColorText.GREEN_BRIGHT + foundCategory.getName() + ColorText.RESET);
             }
         }
+        //statistic
+        String border = "-";
+        System.out.println(ColorText.YELLOW_BOLD_BRIGHT + border.repeat(84) + " Hiện có tổng: "
+                + foundCategory.getProductList().size() + ", sản phẩm thuộc danh mục "
+                + foundCategory.getName().toUpperCase() + " " + border.repeat(84)
+                + ColorText.RESET);
+        // HEAD
+        System.out.println(DesignTable.getBorderProductTable());
+        System.out.println(DesignTable.getProductTitle());
+        System.out.println(DesignTable.getBorderProductTable());
+        // BODY
+        for (Product prod : foundCategory.getProductList()) {
+            prod.displayData(categoryList);
+        }
+        System.out.println(DesignTable.getBorderProductTable());
         return foundCategory;
     }
 
@@ -292,32 +327,46 @@ public class CategoryManager {
             System.err.println("Chưa có danh mục nào để hiển thị !");
             return;
         }
-        System.out.println("Nhập tên danh mục để tìm kiếm, hoặc nhập 'exit' để thoát tìm kiếm :");
+        System.out.println("Nhập 'Tên' danh mục để tìm kiếm, hoặc nhập 'exit' để thoát tìm kiếm :");
         while (true) {
-            String input = scanner.nextLine().toLowerCase();
+            String input = scanner.nextLine().toLowerCase().trim();
             try {
                 // input
                 if (input.equals("exit")) {
                     System.out.println(ColorText.YELLOW_BRIGHT + "Đã thoát lệnh tìm kiếm" + ColorText.RESET);
                     return;
+                } else if (input.isEmpty()) {
+                    System.err.println("Input không được để trống");
+                    continue;
                 }
                 // logic
 
-                List<Category> filteredListCategory = categoryList.stream()
-                        .filter(category -> category.getName().toLowerCase().contains(input)).toList();
+                List<Category> filteredListCategory = new ArrayList<>();
+                for (Category item : categoryList) {
+                    if (item.getName().toLowerCase().contains(input)) {
+                        filteredListCategory.add(item);
+                    }
+                }
+                if (filteredListCategory.isEmpty())
+                    throw new RuntimeException("Không tìm thấy danh mục !" + input);
                 // kẻ bảng
                 System.out.println(DesignTable.getBorderCategoryTable());
                 System.out.println(DesignTable.getCategoryTitle());
                 System.out.println(DesignTable.getBorderCategoryTable());
                 filteredListCategory.forEach(Category::displayData);
                 System.out.println(DesignTable.getBorderCategoryTable());
-                System.out.println("Bạn có thể nhập tên danh mục khác để tìm kiếm, hoặc nhập 'exit' để thoát :");
+                System.out.println(ColorText.WHITE_BRIGHT
+                        + "Bạn có thể nhập 'Tên' danh mục khác để tìm kiếm, hoặc nhập 'exit' để thoát :"
+                        + ColorText.RESET);
                 // error
             } catch (NumberFormatException e) {
                 System.err.println("Lỗi input :" + e.getMessage() + " ?  xin hãy nhập lại");
             } catch (NullPointerException e) {
                 System.err.println("Lỗi: " + e.getMessage());
+            } catch (Exception e) {
+                System.err.println("Lỗi: " + e.getMessage());
             }
+
         }
     }
 }

@@ -122,9 +122,11 @@ public class FileManager {
     public void readDataProduct(InventoryManagement inventoryManagement) {
         List<Category> categoryList = inventoryManagement.getCategoryList();
         List<Product> sampleProductList = new ArrayList<>();
+
         File file = new File("products.txt");
         if (!file.exists())
             return;
+
         Product product = null;
         try (BufferedReader reader = new BufferedReader(new FileReader("products.txt"))) {
             String line;
@@ -154,8 +156,7 @@ public class FileManager {
             for (Category cate : categoryList) {
                 int cateId = cate.getId();
                 cate.getProductList().addAll(sampleProductList.stream()
-                        .filter(prod -> prod.getCategoryId() == cateId)
-                        .toList());
+                        .filter(prod -> prod.getCategoryId() == cateId).toList());
             }
         } catch (IOException e) {
             System.err.println("Error reading from file: " + e.getMessage() + "products.txt");
@@ -167,9 +168,11 @@ public class FileManager {
     //
     public void readDataCategory2(InventoryManagement inventoryManagement) {
         List<Category> categoryList = inventoryManagement.getCategoryList();
+        // obj file
         File file = new File("categories.txt");
         if (!file.exists())
             return;
+
         try (BufferedReader reader = new BufferedReader(new FileReader("categories.txt"))) {
             String line;
 
@@ -203,6 +206,7 @@ public class FileManager {
     }
 
     public void writeFileCategory2(List<Category> categoryList) {
+        List<Product> totalProductList = new ArrayList<>();
         try (PrintWriter writer = new PrintWriter("categories.txt")) {
             for (Category category : categoryList) {
                 writer.println("****Category****");
@@ -211,24 +215,22 @@ public class FileManager {
                 writer.println("Description: " + category.getDescription());
                 writer.println("Status: " + category.isStatus());
                 writer.println();
-                try (PrintWriter writer2 = new PrintWriter("products.txt")) {
-                    writer2.println("****Products****");
-                    category.getProductList().stream()
-                            .map(product -> "Product Id: " + product.getId() +
-                                    "\nProduct Name: " + product.getName() +
-                                    "\nProduct Description: " + product.getDescription() +
-                                    "\nProduct Status: " + product.isStatus() +
-                                    "\nImport Price: " + product.getImportPrice() +
-                                    "\nExport Price: " + product.getExportPrice() +
-                                    "\nProfit: " + product.getProfit() +
-                                    "\nCategoryId: " + product.getCategoryId() + "\n")
-                            .forEach(writer2::println);
-                    System.out.println("Đã lưu về products.txt");
-                } catch (IOException e) {
-                    System.out.println("Error saving to file: " + e.getMessage());
-                }
+                totalProductList.addAll(category.getProductList());
             }
-            System.out.println("Đã lưu về categories.txt");
+            try (PrintWriter writer2 = new PrintWriter("products.txt")) {
+                writer2.println("****Products****");
+                totalProductList.stream()
+                        .map(product -> "Product Id: " + product.getId() +
+                                "\nProduct Name: " + product.getName() +
+                                "\nProduct Description: " + product.getDescription() +
+                                "\nProduct Status: " + product.isStatus() +
+                                "\nImport Price: " + product.getImportPrice() +
+                                "\nExport Price: " + product.getExportPrice() +
+                                "\nProfit: " + product.getProfit() +
+                                "\nCategoryId: " + product.getCategoryId() + "\n").forEach(writer2::println);
+            } catch (IOException e) {
+                System.out.println("Error saving to file: " + e.getMessage());
+            }
         } catch (IOException e) {
             System.out.println("Error saving to file: " + e.getMessage());
         } catch (Exception e) {

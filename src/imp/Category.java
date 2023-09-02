@@ -1,6 +1,7 @@
 package imp;
 
 import controller.ColorText;
+import controller.DesignTable;
 import model.ICategory;
 
 import java.util.ArrayList;
@@ -83,13 +84,17 @@ public class Category implements ICategory {
     public void inputData(Scanner scanner, List<Category> categoryList) {
         // カテゴリー情報の入力を開始します : Nhập thông tin danh mục
         System.out.println(" <-----------Nhập thông tin danh mục----------->");
+        // id generate
+        autoGenerateId(categoryList);
+        // input name
         if (!this.name.isEmpty()) {
-            if (askForUpdateData(scanner, "id")) {
+            if (askForUpdateData(scanner, "Name")) {
                 inputName(scanner, categoryList);
             }
         } else {
             inputName(scanner, categoryList);
         }
+        // input desc
         if (!this.description.isEmpty()) {
             if (askForUpdateData(scanner, "Description")) {
                 inputDescription(scanner);
@@ -97,8 +102,40 @@ public class Category implements ICategory {
         } else {
             inputDescription(scanner);
         }
+        // input Status
         if (askForUpdateData(scanner, "status"))
             inputStatus(scanner);
+    }
+
+    /**
+     * ID generator
+     *
+     * @param categoryList : danh sách các danh mục
+     */
+    public void autoGenerateId(List<Category> categoryList) {
+        // Auto check và thêm id
+        // nếu id = 0 là mặc định tạo mới, thì sẽ check tồn tại và cộng lên sao cho khác biệt
+        if (this.id == 0) {
+            int id = 1;
+            boolean idExists = true;
+            if (!categoryList.isEmpty()) {
+                // check tồn tại
+                while (idExists) {
+                    idExists = false;
+                    for (Category item : categoryList) {
+                        if (item.getId() == id) {
+                            idExists = true;
+                            break;
+                        }
+                    }
+                    if (idExists) {
+                        id++;
+                    }
+                }
+                // gán id input cho id của đối tượng và thoát vòng lặp nếu các diều kiện được thoả mãn
+                this.id = id;
+            }
+        }
     }
 
     /**
@@ -111,43 +148,29 @@ public class Category implements ICategory {
         // Nhập tên danh mục
         System.out.print("-- Nhập tên danh mục 6 - 30 ký tự: ");
         do {
-            String name = scanner.nextLine();
-            // Check kiểm tra tên danh mục nếu có lỗi thì chạy vòng lặp khác và
-            // yêu cầu nhập lại
+            String name = scanner.nextLine().trim();
+
             if (name.isEmpty()) {
-                System.err.println("Lỗi : *_* Tên danh mục không được trống. Xin hãy nhập lại ! ");
+                System.err.println("Lỗi : Tên danh mục không được trống. Xin hãy nhập lại ! ");
                 continue;
             } else if (name.length() < 6 || name.length() > 30) {
-                System.err.println("Lỗi : *_* Tên danh mục không đạt yêu cầu, xin hãy nhập lại !");
+                System.err.println("Lỗi : Tên danh mục không đạt yêu cầu, xin hãy nhập lại !");
                 continue;
             }
+            // Nếu danh mục đã có những sản phẩm khác thì tiến hành so sánh trùng lặp không case
             boolean nameExists = false;
-
-            // Nếu danh mục đã có những sản phẩm khác thì tiến hành so sánh trùng lặp
             if (!categoryList.isEmpty()) {
                 for (Category item : categoryList) {
-                    if (item.getName().equals(name)) {
-                        System.err.println("Lỗi : *_* Tên danh mục đã tồn tại. Xin hãy nhập lại !");
+                    if (item.getName().equalsIgnoreCase(name) && !item.getName().equals(this.name)) {
+                        System.err.println("Lỗi : Tên danh mục đã tồn tại. Xin hãy nhập lại !");
                         nameExists = true;
                         break;
                     }
                 }
             }
             if (!nameExists) {
-                // カテゴリ名が重複しない場合、名前とIDを設定
                 this.name = name;
-                int id = 0;
-                if (!categoryList.isEmpty()) {
-                    for (Category item : categoryList) {
-                        if (item.getId() >= id) {
-                            id = item.getId() + 1;
-                        }
-                    }
-                }
-
-                // gán id input cho id của đối tượng và thoát vòng lặp nếu các diều kiện được thoả mãn
-                this.id = id;
-                break; // thoát
+                return; // thoát
             }
         } while (true);
     }
@@ -157,10 +180,12 @@ public class Category implements ICategory {
         System.out.print("-- Nhập mô tả cho danh mục: ");
         do {
             try {
-                this.description = scanner.nextLine();
+                this.description = scanner.nextLine().trim(); // input xoá trống
                 if (description.isEmpty()) {
                     // Ném ra lỗi và chạy đến lại vòng lặp hỏi mới
-                    throw new RuntimeException(" *_* Mô tả không được để trống. Xin hãy nhập lại ! ");
+                    throw new RuntimeException(" Mô tả không được để trống. Xin hãy nhập lại ! ");
+                } else if (description.length() > 20) {
+                    throw new RuntimeException("Mô tả chỉ được tối đa 30 ký tự !");
                 }
                 // Nếu không có lỗi gì thì thoát vòng lặp
                 break;
@@ -179,7 +204,7 @@ public class Category implements ICategory {
                 " or 'false' : " + ColorText.YELLOW_BRIGHT + "InActive" + ColorText.RESET + ": ");
         do {
             try {
-                String input = scanner.nextLine().toLowerCase();
+                String input = scanner.nextLine().toLowerCase().trim();
                 if (input.equals("true"))
                     this.status = true;
                 else if (input.equals("false"))
@@ -210,10 +235,12 @@ public class Category implements ICategory {
      */
     public boolean askForUpdateData(Scanner scanner, String nameField) {
         if (nameField.equals("status")) {
-            System.out.println("Hiện tại mặt định là InActive, bạn có muốn chọn lại không");
+            System.out.println("** Hiện tại mặt định là "
+                    + ColorText.YELLOW_BRIGHT + "InActive"
+                    + ColorText.RESET + ", bạn có muốn chọn lại không ?");
             System.out.print("-- Để Thực hiện update status, nhập 'y' hoặc 'yes' để sửa đổi," +
                     " hoặc nhập bất kỳ để huỷ : ");
-            String input = scanner.nextLine().toLowerCase();
+            String input = scanner.nextLine().toLowerCase().trim();
             if (input.equals("y") || input.equals("yes")) {
                 return true;
             } else {
@@ -222,9 +249,9 @@ public class Category implements ICategory {
                 return false;
             }
         } else {
-            System.out.print("-- Để Thực hiện update" + nameField + ", nhập 'y' hoặc 'yes' để cập nhật," +
-                    " hoặc nhập bất kỳ để huỷ : ");
-            String input = scanner.nextLine().toLowerCase();
+            System.out.print("-- Để Thực hiện update " + nameField + ", nhập 'y' hoặc 'yes' để cập nhật,"
+                    + " hoặc nhập bất kỳ để huỷ : ");
+            String input = scanner.nextLine().toLowerCase().trim();
             if (input.equals("y") || input.equals("yes")) {
                 return true;
             } else {
@@ -241,15 +268,18 @@ public class Category implements ICategory {
     @Override
     public void displayData() {
         // ID、名前、説明、ステータスの情報を表示します
-        String colorTrue = ColorText.YELLOW_BRIGHT;
-        String colorFalse = ColorText.GREEN_BRIGHT;
+        String colorFalse = ColorText.YELLOW_BRIGHT;
+        String colorTrue = ColorText.GREEN_BRIGHT;
         String selectColor;
         String colorR = ColorText.RESET;
-        if (status)
+        if (status) {
             selectColor = colorTrue;
-        else
+        } else {
             selectColor = colorFalse;
-        System.out.printf("| %-10d | %-20s | %-20s | " + selectColor + "%-20s" + colorR + " |\n",
+        }
+        System.out.printf("| %-10d | %-30s | %-30s | " + selectColor + "%-20s" + colorR + " |\n",
                 id, name, description, status ? "Active" : "InActive");
     }
+
+
 }
