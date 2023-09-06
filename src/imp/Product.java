@@ -100,7 +100,7 @@ public class Product implements IProduct {
         this.importPrice = 0;
         this.exportPrice = 0;
         this.profit = 0;
-        this.status = false;
+        this.status = true;
     }
 
     public Product() {
@@ -110,7 +110,7 @@ public class Product implements IProduct {
         this.importPrice = 0;
         this.exportPrice = 0;
         this.profit = 0;
-        this.status = false;
+        this.status = true;
         this.categoryId = 0;
     }
 
@@ -187,7 +187,7 @@ public class Product implements IProduct {
     /**
      * Các phương thức dùng trong phương thức inputData
      */
-    public void inputID(Scanner scanner, List<Product> productList, List<Category> categoryList) {
+    public void inputID(Scanner scanner, List<Product> allProduct, List<Category> categoryList) {
         // IDを入力
         boolean isTrue = true;
         System.out.print("-- Nhập Id sản phẩm, bắt đầu từ ký tự (P) và có tổng tối đa 4 ký tự: \n");
@@ -200,7 +200,7 @@ public class Product implements IProduct {
                     throw new RuntimeException("Id không được để trống");
                 }
                 // check trùng
-                for (Product item : productList) {
+                for (Product item : allProduct) {
                     if (item.getId().equalsIgnoreCase(id) && !item.getId().equals(this.id)) {
                         String catName = categoryList.stream()
                                 .filter(category -> category.getId() == item.getCategoryId())
@@ -221,7 +221,7 @@ public class Product implements IProduct {
     }
 
     // input name
-    public void inputName(Scanner scanner, List<Product> productList, List<Category> categoryList) {
+    public void inputName(Scanner scanner, List<Product> allProduct, List<Category> categoryList) {
         boolean isExit = false;
         System.out.print("-- Hãy nhập tên sản phẩm từ 6 - 30 ký tự: ");
         while (!isExit) {
@@ -236,7 +236,7 @@ public class Product implements IProduct {
                     throw new RuntimeException("Tên nhập không đạt yêu cầu!");
                 }
                 // check trùng
-                for (Product item : productList) {
+                for (Product item : allProduct) {
                     if (item.getName().equalsIgnoreCase(productName) && !item.getName().equals(this.name)) {
                         String catName = categoryList.stream()
                                 .filter(category -> category.getId() == item.getCategoryId())
@@ -255,7 +255,7 @@ public class Product implements IProduct {
             } catch (RuntimeException e) {
                 System.err.println("Lỗi: " + e.getMessage() + " , xin hãy nhập lại tên ");
             } catch (Exception e) {
-                System.out.println("Error" + e.getMessage());
+                System.out.println("Lỗi" + e.getMessage());
             }
         }
     }
@@ -267,6 +267,9 @@ public class Product implements IProduct {
         do {
             try {
                 String input = scanner.nextLine().trim();
+                if (input.isEmpty()) {
+                    throw new RuntimeException("Giá nhập không được để trống !");
+                }
                 double importPrice = Double.parseDouble(input);
                 if (importPrice <= 0) {
                     // thả ra lỗi và di tới vòng lặp mới
@@ -293,6 +296,10 @@ public class Product implements IProduct {
         do {
             try {
                 String inputPrice = scanner.nextLine().trim();
+                if (inputPrice.isEmpty()) {
+                    throw new RuntimeException("Giá xuất không được để trống !");
+                }
+                //
                 double ExportPrice = Double.parseDouble(inputPrice);
                 // check các điều kiện và thả ra lỗi để đi đến vòng lặp mới
                 if (ExportPrice <= 0) {
@@ -300,7 +307,7 @@ public class Product implements IProduct {
                             String.format("%.2f", this.importPrice * (MIN_INTEREST_RATE + 1))
                             + " $");
                 } else if (ExportPrice < this.importPrice * (MIN_INTEREST_RATE + 1)) {
-                    throw new RuntimeException("Giá xuất cần tối thiểu: " +
+                    throw new RuntimeException("Giá xuất cần ít nhất trên: " +
                             String.format("%.2f", this.importPrice * (MIN_INTEREST_RATE + 1))
                             + " $");
                 }
@@ -312,6 +319,8 @@ public class Product implements IProduct {
             catch (InputMismatchException e) {
                 System.err.println("Lỗi: Giá xuất phải là một số thực, hãy nhập lại !");
             } catch (RuntimeException e) {
+                System.err.println("Lỗi : " + e.getMessage());
+            } catch (Exception e) {
                 System.err.println("Lỗi : " + e.getMessage());
             }
         } while (isExit);
@@ -327,7 +336,7 @@ public class Product implements IProduct {
                 this.description = scanner.nextLine().trim();
                 if (description.isEmpty()) {
                     throw new RuntimeException("Mô tả không được để trống, xin hãy nhập lại !");
-                } else if (description.length() > 20) {
+                } else if (description.length() > 30) {
                     throw new RuntimeException("Mô tả chỉ được tối đa 30 ký tự !");
                 }
                 // nhập xong thì thoát khỏi vòng lặp
@@ -370,7 +379,7 @@ public class Product implements IProduct {
                 ColorText.YELLOW_BRIGHT + "Ngừng kinh doanh" + ColorText.RESET;
         System.out.println("( Hiện tại trạng thái là : '" + textStatus +
                 "' , bạn có muốn chọn lại không ? )");
-        System.out.print(ColorText.YELLOW_BRIGHT + "Để cập nhật Status , nhập 'y' hoặc 'yes' để cập nhật," +
+        System.out.print(ColorText.WHITE_BRIGHT + "-- Để cập nhật Status , nhập 'y' hoặc 'yes' để cập nhật," +
                 " hoặc nhập bất kỳ để huỷ : " + ColorText.RESET);
         String input = scanner.nextLine().toLowerCase().trim();
         if (input.equals("y") || input.equals("yes")) {
@@ -383,7 +392,7 @@ public class Product implements IProduct {
     }
 
     private boolean askForUpdateData(Scanner scanner, String nameField) {
-        System.out.print(ColorText.YELLOW_BRIGHT + "Để cập nhật " + nameField + ", nhập 'y' hoặc 'yes' để cập nhật," +
+        System.out.print(ColorText.WHITE_BRIGHT + "Để cập nhật " + nameField + ", nhập 'y' hoặc 'yes' để cập nhật," +
                 " hoặc nhập bất kỳ để huỷ : " + ColorText.RESET);
         String input = scanner.nextLine().toLowerCase().trim();
         if (input.equals("y") || input.equals("yes")) {

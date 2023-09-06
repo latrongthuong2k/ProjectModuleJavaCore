@@ -29,6 +29,8 @@ public class ProductManager {
      */
     public void displayProduct(List<Category> categoryList) {
         // lọc và thêm toàn bộ sản phẩm vào sublist để hiển thị
+        int countAvailable = 0;
+        int countNoAvailable = 0;
         List<Product> subList = new ArrayList<>();
         for (Category cate : categoryList) {
             subList.addAll(cate.getProductList());
@@ -46,9 +48,20 @@ public class ProductManager {
             System.out.println(DesignTable.getBorderProductTable());
             for (Product item : subList) {
                 item.displayData(categoryList);
+                if (item.isStatus())
+                    countAvailable++;
+                else
+                    countNoAvailable++;
             }
             System.out.println(DesignTable.getBorderProductTable());
-
+            System.out.println();
+            System.out.println(" * [ Có : " + ColorText.WHITE_BRIGHT
+                    + countAvailable + ColorText.RESET + " sản phẩm "
+                    + ColorText.GREEN_BRIGHT + "Còn hàng " + ColorText.RESET + ']');
+            System.out.println(" * [ Có : " + ColorText.WHITE_BRIGHT
+                    + countNoAvailable + ColorText.RESET + " sản phẩm "
+                    + ColorText.YELLOW_BRIGHT + "Ngừng kinh doanh " + ColorText.RESET + ']');
+            System.out.println();
         } catch (NullPointerException e) {
             System.err.println("Lỗi : Danh sách danh mục đang chọn bị NUll");
         } catch (Exception e) {
@@ -63,10 +76,6 @@ public class ProductManager {
      * @param scanner          : đối tượng scanner để lấy input
      */
     public void addProduct(Category selectedCategory, List<Category> categoryList, Scanner scanner) {
-        if (selectedCategory == null) {
-            System.err.println("Chưa chọn danh mục để thêm !");
-            return;
-        }
         System.out.print("-- Nhập số lượng cần thêm, hoặc gõ 'exit' để huỷ thêm: ");
         int number;
         while (true) {
@@ -89,19 +98,21 @@ public class ProductManager {
             }
         }
 
-
+        System.out.println();
         System.out.println("*********** Tiến hành thêm sản phẩm ***********");
-
+        // lấy danh sách allProducts
+        List<Product> subProductList = new ArrayList<>();
+        categoryList.forEach(category -> subProductList.addAll(category.getProductList()));
+        // thêm theo số lượng
         for (int i = 0; i < number; i++) {
             System.out.println(ColorText.WHITE_BRIGHT + "Thêm sản phẩm thứ " + (i + 1) + ColorText.RESET);
             Product product = new Product(selectedCategory.getId());
-            List<Product> subProductList = new ArrayList<>();
-            for (Category cate : categoryList) {
-                subProductList.addAll(cate.getProductList());
-            }
+            // inputData
             product.inputData(scanner, subProductList, categoryList);
             selectedCategory.getProductList().add(product);
-            System.out.println(ColorText.GREEN_BRIGHT + " ^_^ Thêm thành công" + ColorText.RESET);
+            System.out.println();
+            System.out.println(ColorText.GREEN_BRIGHT + " ^_^ Thêm thành công " + ColorText.RESET);
+            System.out.println();
         }
     }
 
@@ -112,10 +123,7 @@ public class ProductManager {
      * @param scanner          : đối tượng scanner để lấy input
      */
     public void updateProduct(Category selectedCategory, Scanner scanner, List<Category> categoryList) {
-        if (selectedCategory == null) {
-            System.err.println("Danh mục chưa được chọn !, chọn lệnh '1' để chọn danh mục trước");
-            return;
-        }
+        // check empty products
         if (selectedCategory.getProductList().isEmpty()) {
             System.out.println(ColorText.YELLOW_BRIGHT + "Hiện :( không có sản phẩm nào cả ! " +
                     ColorText.RESET);
@@ -125,7 +133,6 @@ public class ProductManager {
         boolean isFound = false;
         System.out.print("-- Hãy nhập tên hoặc mã sản phẩm cần tìm để thực hiện cập nhật /" +
                 " hoặc nhập 'exit' để thoát lệnh: ");
-
         while (!isFound) {
             // input
             String input = scanner.nextLine().toLowerCase().trim();
@@ -134,16 +141,19 @@ public class ProductManager {
                 System.out.println(ColorText.YELLOW_BRIGHT + "Đã thoát lệnh cập nhật" + ColorText.RESET);
                 return;
             }
+            // danh sách sp tổng
+            List<Product> subProductList = new ArrayList<>();
+            categoryList.forEach(category -> subProductList.addAll(category.getProductList()));
 
             for (Product item : selectedCategory.getProductList()) {
                 if (item.getId().toLowerCase().equals(input) || item.getName().equalsIgnoreCase(input)) {
                     System.out.println(ColorText.WHITE_BRIGHT + "Đã tìm thấy sản phẩm : " +
                             ColorText.GREEN_BRIGHT + item.getName() + ColorText.RESET);
-
-                    isFound = true;
+                    System.out.println();// tách một dòng ra
+                    isFound = true; // kiểm tra tồn tại
                     // update Information
                     System.out.println("***** Tiến hành cập nhật *****");
-                    item.inputData(scanner, selectedCategory.getProductList(), categoryList);
+                    item.inputData(scanner, subProductList, categoryList);
                     System.out.println(ColorText.GREEN_BRIGHT + " ^_^ Cập nhật thành công" + ColorText.RESET);
                     break;
                 }
@@ -163,13 +173,11 @@ public class ProductManager {
      * @param scanner          : đối tượng scanner để lấy input
      */
     public void deleteProduct(Category selectedCategory, Scanner scanner) {
-        if (selectedCategory == null) {
-            System.err.println("Danh mục chưa được chọn !, chọn lệnh '1' để chọn danh mục trước");
-            return;
-        }
-        // find product
+        // Check empty products
         if (selectedCategory.getProductList().isEmpty()) {
-            System.err.println("Hiện chưa có bất kì sản phẩm nào");
+            System.out.println(ColorText.YELLOW_BRIGHT
+                    + "Hiện chưa có bất kì sản phẩm nào ở danh mục "
+                    + selectedCategory.getName() + ColorText.RESET);
             return;
         }
         boolean isDone = false;
@@ -216,70 +224,78 @@ public class ProductManager {
      * @param categoryList : danh sách category
      */
     public void sortProductByNameAToZ(List<Category> categoryList) {
-        if (categoryList.isEmpty()) {
-            System.err.println(ColorText.YELLOW_BRIGHT + "Hiện tại chưa có sản phẩm nào" + ColorText.RESET);
+        // danh sách tổng các sp
+        List<Product> subList = new ArrayList<>();
+        categoryList.forEach(category -> subList.addAll(category.getProductList()));
+        if (subList.isEmpty()) {
+            System.err.println("Hiện tại chưa có sản phẩm nào !");
             return;
         }
-        List<Product> subList = new ArrayList<>();
-        for (Category cate : categoryList) {
-            subList.addAll(cate.getProductList());
-        }
+        // Table
         System.out.println(DesignTable.statisticForTableProduct(subList.size()));
         // sort
         subList.sort(Comparator.comparing(Product::getName));
-        // table
+        // Head
         System.out.println(DesignTable.getBorderProductTable());
         System.out.println(DesignTable.getProductTitle());
         System.out.println(DesignTable.getBorderProductTable());
+        // Body
         for (Product product : subList) {
             product.displayData(categoryList);
         }
         System.out.println(DesignTable.getBorderProductTable());
+        // Footer
+        System.out.println();
+        System.out.println(ColorText.YELLOW_BRIGHT + "[ Bảng sắp xếp các sản phẩm từ 'A-Z' ]" + ColorText.RESET);
+        System.out.println();
     }
 
     /**
      * xắp xếp lợi nhuận cao đến thấp
      */
     public void sortProductByProfitHighToLow(List<Category> categoryList) {
-        if (categoryList.isEmpty()) {
-            System.err.println(ColorText.YELLOW_BRIGHT + "Hiện tại chưa có sản phẩm nào" + ColorText.RESET);
+        // danh sách tổng các sp
+        List<Product> subList = new ArrayList<>();
+        categoryList.forEach(category -> subList.addAll(category.getProductList()));
+        if (subList.isEmpty()) {
+            System.err.println("Hiện tại chưa có sản phẩm nào !");
             return;
         }
-        List<Product> subList = new ArrayList<>();
-        for (Category cate : categoryList) {
-            subList.addAll(cate.getProductList());
-        }
-
+        // Table
         System.out.println(DesignTable.statisticForTableProduct(subList.size()));
         // sort
         subList.sort(Comparator.comparingDouble(Product::getProfit).reversed());
-        // table
+        // Head
         System.out.println(DesignTable.getBorderProductTable());
         System.out.println(DesignTable.getProductTitle());
         System.out.println(DesignTable.getBorderProductTable());
+        // Body
         for (Product product : subList) {
             product.displayData(categoryList);
         }
         System.out.println(DesignTable.getBorderProductTable());
+        // Footer
+        System.out.println();
+        System.out.println(ColorText.YELLOW_BRIGHT
+                + "[ Bảng sắp xếp các sản phẩm theo lợi nhuận 'cao - thấp' ]"
+                + ColorText.RESET);
+        System.out.println();
     }
 
 
     /**
      * Tìm kiếm sản phẩm theo tên hoặc id
      *
-     * @param selectedCategory : tham chiếu đên đối tượng danh mục chọn ở trong kho
-     * @param categoryList     : lấy danh sách các danh mục để bắt buộc truyền vào hàm displayData
-     * @param scanner          : đối tượng scanner để lấy input
+     * @param categoryList : lấy danh sách các danh mục để bắt buộc truyền vào hàm displayData
+     * @param scanner      : đối tượng scanner để lấy input
      */
-    public void findProductByName(Category selectedCategory, List<Category> categoryList, Scanner scanner) {
-        if (selectedCategory == null) {
-            System.err.println("Danh mục chưa được chọn !, chọn lệnh '1' để chọn danh mục trước");
-            return;
-        }
-        if (categoryList.isEmpty()) {
-            System.err.println("Chưa có sản phẩm nào để hiển thị !");
-            return;
-        }
+    public void findProductByName(List<Category> categoryList, Scanner scanner) {
+        // Hiển tị bảng tổng quát
+        displayProduct(categoryList);
+        // Danh sách tổng các sp
+        List<Product> allProduct = new ArrayList<>();
+        categoryList.forEach(category -> allProduct.addAll(category.getProductList()));
+        // action
         System.out.print("-- Nhập từ khoá để tìm kiếm, hoặc nhập 'exit' để thoát lệnh lệnh :");
         while (true) {
             try {
@@ -288,8 +304,11 @@ public class ProductManager {
                 if (input.equals("exit")) {
                     System.out.println(ColorText.YELLOW_BRIGHT + "Đã thoát lệnh tìm kiếm" + ColorText.RESET);
                     return;
+                } else if (input.isEmpty()) {
+                    throw new RuntimeException("từ khoá không được để trống !");
                 }
-                List<Product> filteredListProduct = selectedCategory.getProductList().stream()
+                // lọc các sp cần tìm
+                List<Product> filteredListProduct = allProduct.stream()
                         .filter(product ->
                                 String.valueOf(product.getId()).toLowerCase().contains(input) ||
                                         product.getName().toLowerCase().contains(input) ||
@@ -297,12 +316,15 @@ public class ProductManager {
                                         String.valueOf(product.getImportPrice()).contains(input))
                         .toList();
                 if (filteredListProduct.isEmpty()) {
-                    System.err.println("Không có sản phẩm nào tên: " + input);
+                    throw new RuntimeException("Không có sản phẩm nào tên: " + input); // thông báo và yêu cầu nhập lại
                 }
-                System.out.println("-- Sản phẩm tìm kiếm được là :");
+                // Table
+                System.out.println(ColorText.WHITE_BRIGHT + "-- Sản phẩm tìm kiếm được là : " + ColorText.RESET);
+                // Head
                 System.out.println(DesignTable.getBorderProductTable());
                 System.out.println(DesignTable.getProductTitle());
                 System.out.println(DesignTable.getBorderProductTable());
+                // Body
                 for (Product product : filteredListProduct) {
                     product.displayData(categoryList);
                 }
@@ -311,6 +333,8 @@ public class ProductManager {
                         "Nhập tên khác để tìm kiếm, hoặc nhập 'exit' để thoát tìm kiếm: " +
                         ColorText.RESET);
 
+            } catch (RuntimeException e) {
+                System.err.println("Lỗi: " + e.getMessage());
             } catch (Exception e) {
                 System.err.println("Lỗi: " + e.getMessage());
             }

@@ -141,9 +141,9 @@ public class FileManager {
                 } else if (line.startsWith("Product Status: ") && product != null) {
                     product.setStatus(Boolean.parseBoolean(getValueFromLine(line, "Product Status: ")));
                 } else if (line.startsWith("Import Price: ") && product != null) {
-                    product.setImportPrice(Double.parseDouble(getValueFromLine(line, "ImportPrice: ")));
+                    product.setImportPrice(Double.parseDouble(getValueFromLine(line, "Import Price: ")));
                 } else if (line.startsWith("Export Price: ") && product != null) {
-                    product.setExportPrice(Double.parseDouble(getValueFromLine(line, "ExportPrice: ")));
+                    product.setExportPrice(Double.parseDouble(getValueFromLine(line, "Export Price: ")));
                 } else if (line.startsWith("Profit: ") && product != null) {
                     product.setProfit(Double.parseDouble(getValueFromLine(line, "Profit: ")));
                 } else if (line.startsWith("CategoryId: ") && product != null) {
@@ -161,7 +161,7 @@ public class FileManager {
         } catch (IOException e) {
             System.err.println("Error reading from file: " + e.getMessage() + "products.txt");
         } catch (NullPointerException e) {
-            System.err.println("Lỗi: ");
+            System.err.println("Lỗi: " + e.getMessage());
         }
     }
 

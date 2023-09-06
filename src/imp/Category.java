@@ -1,7 +1,6 @@
 package imp;
 
 import controller.ColorText;
-import controller.DesignTable;
 import model.ICategory;
 
 import java.util.ArrayList;
@@ -64,7 +63,7 @@ public class Category implements ICategory {
         this.id = 0;
         this.name = "";
         this.description = "";
-        this.status = false;
+        this.status = true;
     }
 
     public Category(int id, String name, String description, boolean status) {
@@ -88,7 +87,7 @@ public class Category implements ICategory {
         autoGenerateId(categoryList);
         // input name
         if (!this.name.isEmpty()) {
-            if (askForUpdateData(scanner, "Name")) {
+            if (askForUpdateData(scanner, "'Name'")) {
                 inputName(scanner, categoryList);
             }
         } else {
@@ -96,14 +95,14 @@ public class Category implements ICategory {
         }
         // input desc
         if (!this.description.isEmpty()) {
-            if (askForUpdateData(scanner, "Description")) {
+            if (askForUpdateData(scanner, "'Description'")) {
                 inputDescription(scanner);
             }
         } else {
             inputDescription(scanner);
         }
         // input Status
-        if (askForUpdateData(scanner, "status"))
+        if (askForUpdateStatus(scanner, this.status))
             inputStatus(scanner);
     }
 
@@ -133,8 +132,8 @@ public class Category implements ICategory {
                     }
                 }
                 // gán id input cho id của đối tượng và thoát vòng lặp nếu các diều kiện được thoả mãn
-                this.id = id;
             }
+            this.id = id;
         }
     }
 
@@ -184,7 +183,7 @@ public class Category implements ICategory {
                 if (description.isEmpty()) {
                     // Ném ra lỗi và chạy đến lại vòng lặp hỏi mới
                     throw new RuntimeException(" Mô tả không được để trống. Xin hãy nhập lại ! ");
-                } else if (description.length() > 20) {
+                } else if (description.length() > 30) {
                     throw new RuntimeException("Mô tả chỉ được tối đa 30 ký tự !");
                 }
                 // Nếu không có lỗi gì thì thoát vòng lặp
@@ -192,7 +191,7 @@ public class Category implements ICategory {
             } catch (RuntimeException e) {
                 System.err.println("Lỗi: " + e.getMessage());
             } catch (Exception e) {
-                System.out.println("Error" + e.getMessage());
+                System.out.println("Lỗi" + e.getMessage());
             }
         }
         while (true);
@@ -219,10 +218,27 @@ public class Category implements ICategory {
             } catch (RuntimeException e) {
                 System.err.println("Lỗi: " + e.getMessage());
             } catch (Exception e) {
-                System.out.println("Error" + e.getMessage());
+                System.err.println("Lỗi: " + e.getMessage());
             }
         }
         while (true);
+    }
+
+    private boolean askForUpdateStatus(Scanner scanner, boolean status) {
+        String textStatus = status ? ColorText.GREEN_BRIGHT + "Active" + ColorText.RESET :
+                ColorText.YELLOW_BRIGHT + "InActive" + ColorText.RESET;
+        System.out.println("( Hiện tại trạng thái là : '" + textStatus +
+                "' , bạn có muốn chọn lại không ? )");
+        System.out.print(ColorText.WHITE_BRIGHT + "Để cập nhật Status , nhập 'y' hoặc 'yes' để cập nhật," +
+                " hoặc nhập bất kỳ để huỷ : " + ColorText.RESET);
+        String input = scanner.nextLine().toLowerCase().trim();
+        if (input.equals("y") || input.equals("yes")) {
+            return true;
+        } else {
+            System.out.println(
+                    ColorText.YELLOW_BRIGHT + "Đã huỷ cập nhật " + "Status" + ColorText.RESET);
+            return false;
+        }
     }
 
     /**
@@ -233,32 +249,17 @@ public class Category implements ICategory {
      * @param nameField : tên trường truyền vào để hiển thị
      * @return : trả về boolean cho việc đồng ý hay không
      */
-    public boolean askForUpdateData(Scanner scanner, String nameField) {
-        if (nameField.equals("status")) {
-            System.out.println("** Hiện tại mặt định là "
-                    + ColorText.YELLOW_BRIGHT + "InActive"
-                    + ColorText.RESET + ", bạn có muốn chọn lại không ?");
-            System.out.print("-- Để Thực hiện update status, nhập 'y' hoặc 'yes' để sửa đổi," +
-                    " hoặc nhập bất kỳ để huỷ : ");
-            String input = scanner.nextLine().toLowerCase().trim();
-            if (input.equals("y") || input.equals("yes")) {
-                return true;
-            } else {
-                System.out.println(
-                        ColorText.YELLOW_BRIGHT + "Đã huỷ nhập " + nameField + ColorText.RESET);
-                return false;
-            }
+    private boolean askForUpdateData(Scanner scanner, String nameField) {
+        System.out.print(ColorText.WHITE_BRIGHT + "Để Thực hiện update "
+                + nameField + ", nhập 'y' hoặc 'yes' để cập nhật,"
+                + " hoặc nhập bất kỳ để huỷ : " + ColorText.RESET);
+        String input = scanner.nextLine().toLowerCase().trim();
+        if (input.equals("y") || input.equals("yes")) {
+            return true;
         } else {
-            System.out.print("-- Để Thực hiện update " + nameField + ", nhập 'y' hoặc 'yes' để cập nhật,"
-                    + " hoặc nhập bất kỳ để huỷ : ");
-            String input = scanner.nextLine().toLowerCase().trim();
-            if (input.equals("y") || input.equals("yes")) {
-                return true;
-            } else {
-                System.out.println(
-                        ColorText.YELLOW_BRIGHT + "Đã huỷ cập nhật " + nameField + ColorText.RESET);
-                return false;
-            }
+            System.out.println(
+                    ColorText.YELLOW_BRIGHT + "Đã huỷ cập nhật " + nameField + ColorText.RESET);
+            return false;
         }
     }
 

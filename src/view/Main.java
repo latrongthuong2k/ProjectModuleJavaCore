@@ -71,6 +71,7 @@ public class Main {
                     "****************************************");
             System.out.println();
             System.out.print("Chọn một chức năng (1-3): " + ColorText.RESET);
+            System.out.println();
             /**
              * Check lỗi Input cho choice
              */
@@ -140,6 +141,10 @@ public class Main {
             while (true) {
                 if (scanner.hasNextInt()) {
                     categoryChoice = scanner.nextInt();
+                    if (categoryChoice < 1 || categoryChoice > 6) {
+                        System.err.println("* Lệnh chọn phải từ 1-6 !");
+                        continue;
+                    }
                     break;
                 } else {
                     System.err.println(" * Lệnh chọn không hợp lệ! Vui lòng nhập số.");
@@ -194,7 +199,7 @@ public class Main {
             ProductManager productManager, CategoryManager categoryManager,
             FileManager fileManager, List<Category> categoryList) {
         // Instance selectedCategory
-        Category selectedCategory = null;
+        Category selectedCategory;
         /**
          * Quay về menu kho nếu chưa có danh mục nào để thêm sản phẩm
          */
@@ -207,7 +212,7 @@ public class Main {
          * MENU PRODUCT MANAGEMENT
          */
         do {
-            System.out.println("""
+            System.out.println(ColorText.WHITE_BRIGHT + """
                      ----------------- PRODUCT MENU -----------------
                      * 1. Thêm mới sản phẩm
                      * 2. Hiển thị thông tin sản phẩm
@@ -219,7 +224,8 @@ public class Main {
                      * 8. Thoát (Quay lại kho)
                     -------------------------------------------------
                      """);
-            System.out.print("-- Chọn một chức năng (1-8): ");
+            System.out.print("-- Chọn một chức năng (1-8): " + ColorText.RESET);
+            System.out.println();
             /**
              * Nhập lệnh
              * -> check phải là số
@@ -227,6 +233,10 @@ public class Main {
             while (true) {
                 if (scanner.hasNextInt()) {
                     productChoice = scanner.nextInt();
+                    if (productChoice < 1 || productChoice > 8) {
+                        System.err.println("* Lệnh chọn phải từ 1-8 !");
+                        continue;
+                    }
                     break;
                 } else {
                     System.err.println(" * Lệnh chọn không hợp lệ! Vui lòng nhập số.");
@@ -238,6 +248,8 @@ public class Main {
                 case 1 -> {
                     // chọn danh mục để thêm
                     selectedCategory = categoryManager.selectCategory(categoryList, scanner);
+                    if (selectedCategory == null)  // bỏ các action sau nếu chưa chọn
+                        break;
                     // Thêm sản phẩm / ghi file
                     productManager.addProduct(selectedCategory, categoryList, scanner);
                     fileManager.writeFileCategory2(categoryList);
@@ -249,12 +261,16 @@ public class Main {
                     // chọn danh mục để cập nhật
                     selectedCategory = categoryManager.selectCategory(categoryList, scanner);
                     // Cập nhật sản phẩm / ghi file
+                    if (selectedCategory == null)  // bỏ các action sau nếu chưa chọn
+                        break;
                     productManager.updateProduct(selectedCategory, scanner, categoryList);
                     fileManager.writeFileCategory2(categoryList);
                 }
                 case 4 -> {
                     // chọn danh mục để xoá
                     selectedCategory = categoryManager.selectCategory(categoryList, scanner);
+                    if (selectedCategory == null) // bỏ các action sau nếu chưa chọn
+                        break;
                     // xoá sản phẩm / ghi file
                     productManager.deleteProduct(selectedCategory, scanner);
                     fileManager.writeFileCategory2(categoryList);
@@ -267,7 +283,7 @@ public class Main {
                         productManager.sortProductByProfitHighToLow(categoryList);
                 case 7 ->
                     // Tìm sản phẩm theo tên
-                        productManager.findProductByName(selectedCategory, categoryList, scanner);
+                        productManager.findProductByName(categoryList, scanner);
                 case 8 ->
                     // trở về kho
                         System.out.println(ColorText.GREEN_BRIGHT +
