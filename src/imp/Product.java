@@ -6,6 +6,7 @@ import model.IProduct;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class Product implements IProduct {
 
@@ -194,7 +195,7 @@ public class Product implements IProduct {
         while (isTrue) {
             try {
                 String id = scanner.nextLine().trim();
-                if (!(id.length() == 4 && id.charAt(0) == 'P')) {
+                if (!regexProductId(id)) {
                     throw new RuntimeException("Nhập sai yêu cầu !");
                 } else if (id.isEmpty()) {
                     throw new RuntimeException("Id không được để trống");
@@ -218,6 +219,11 @@ public class Product implements IProduct {
                 System.err.println("Lỗi: " + e.getMessage());
             }
         }
+    }
+
+    public boolean regexProductId(String productId) {
+        String productIdRegex = "^P[\\w\\d]{3}$"; //^P[0-9]{3}$
+        return Pattern.matches(productIdRegex, productId);
     }
 
     // input name

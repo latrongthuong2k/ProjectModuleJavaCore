@@ -1,0 +1,6 @@
+****Category****
+Id: 1
+Name: Danh mục 1
+Description: Danh mục
+Status: true
+
