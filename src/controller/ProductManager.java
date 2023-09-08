@@ -84,6 +84,9 @@ public class ProductManager {
                 if (input.equals("exit")) {
                     System.out.println(ColorText.YELLOW_BRIGHT + "Đã huỷ lệnh thêm" + ColorText.RESET);
                     return;
+                } else if (input.isEmpty()) {
+                    System.err.println("Không được để trống ! ");
+                    continue;
                 } else {
                     number = Integer.parseInt(input);
                 }
@@ -140,6 +143,9 @@ public class ProductManager {
             if (input.equals("exit")) {
                 System.out.println(ColorText.YELLOW_BRIGHT + "Đã thoát lệnh cập nhật" + ColorText.RESET);
                 return;
+            } else if (input.isEmpty()) {
+                System.err.println("Không được để trống ! ");
+                continue;
             }
             // danh sách sp tổng
             List<Product> subProductList = new ArrayList<>();
@@ -189,6 +195,9 @@ public class ProductManager {
             if (input.equals("exit")) {
                 System.out.println(ColorText.YELLOW_BRIGHT + "Đã thoát lệnh xoá" + ColorText.RESET);
                 return;
+            } else if (input.isEmpty()) {
+                System.err.println("Không được để trống ! ");
+                continue;
             }
             //
             for (Product item : selectedCategory.getProductList()) {
@@ -316,7 +325,7 @@ public class ProductManager {
                                         String.valueOf(product.getImportPrice()).contains(input))
                         .toList();
                 if (filteredListProduct.isEmpty()) {
-                    throw new RuntimeException("Không có sản phẩm nào tên: " + input); // thông báo và yêu cầu nhập lại
+                    throw new RuntimeException("Không có sản phẩm nào có từ khoá : " + input); // thông báo và yêu cầu nhập lại
                 }
                 // Table
                 System.out.println(ColorText.WHITE_BRIGHT + "-- Sản phẩm tìm kiếm được là : " + ColorText.RESET);
@@ -329,10 +338,11 @@ public class ProductManager {
                     product.displayData(categoryList);
                 }
                 System.out.println(DesignTable.getBorderProductTable());
+                System.out.println();
                 System.out.println(ColorText.WHITE_BRIGHT +
                         "Nhập tên khác để tìm kiếm, hoặc nhập 'exit' để thoát tìm kiếm: " +
                         ColorText.RESET);
-
+                System.out.println();
             } catch (RuntimeException e) {
                 System.err.println("Lỗi: " + e.getMessage());
             } catch (Exception e) {

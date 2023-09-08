@@ -87,16 +87,20 @@ public class Category implements ICategory {
         autoGenerateId(categoryList);
         // input name
         if (!this.name.isEmpty()) {
-            if (askForUpdateData(scanner, "'Name'")) {
+            if (askForUpdateData(scanner, "'tên danh mục'", this.name)) {
                 inputName(scanner, categoryList);
+                System.out.println(ColorText.GREEN_BRIGHT + "Cập nhật thành công" + ColorText.RESET);
+                System.out.println();
             }
         } else {
             inputName(scanner, categoryList);
         }
         // input desc
         if (!this.description.isEmpty()) {
-            if (askForUpdateData(scanner, "'Description'")) {
+            if (askForUpdateData(scanner, "'mô tả'", this.description)) {
                 inputDescription(scanner);
+                System.out.println(ColorText.GREEN_BRIGHT + "Cập nhật thành công" + ColorText.RESET);
+                System.out.println();
             }
         } else {
             inputDescription(scanner);
@@ -204,11 +208,15 @@ public class Category implements ICategory {
         do {
             try {
                 String input = scanner.nextLine().toLowerCase().trim();
-                if (input.equals("true"))
+                if (input.equals("true")) {
                     this.status = true;
-                else if (input.equals("false"))
+                    System.out.println(ColorText.GREEN_BRIGHT + "Cập nhật thành công" + ColorText.RESET);
+                    System.out.println();
+                } else if (input.equals("false")) {
                     this.status = false;
-                else {
+                    System.out.println(ColorText.GREEN_BRIGHT + "Cập nhật thành công" + ColorText.RESET);
+                    System.out.println();
+                } else {
                     // Ném ra lỗi và chạy lại đến vòng lặp hỏi mới
                     throw new Exception(" *_* Input không đúng yêu cầu. Xin hãy nhập lại !");
                 }
@@ -235,8 +243,8 @@ public class Category implements ICategory {
         if (input.equals("y") || input.equals("yes")) {
             return true;
         } else {
-            System.out.println(
-                    ColorText.YELLOW_BRIGHT + "Đã huỷ cập nhật " + "Status" + ColorText.RESET);
+            System.out.println(ColorText.YELLOW_BRIGHT + "Đã huỷ cập nhật " + "Status" + ColorText.RESET);
+            System.out.println();
             return false;
         }
     }
@@ -249,7 +257,10 @@ public class Category implements ICategory {
      * @param nameField : tên trường truyền vào để hiển thị
      * @return : trả về boolean cho việc đồng ý hay không
      */
-    private boolean askForUpdateData(Scanner scanner, String nameField) {
+    private boolean askForUpdateData(Scanner scanner, String nameField, String oldData) {
+        System.out.println("Giá trị trước đây của "
+                + ColorText.GREEN_BRIGHT + nameField + ColorText.RESET
+                + " là : " + ColorText.YELLOW_BRIGHT + oldData + ColorText.RESET);
         System.out.print(ColorText.WHITE_BRIGHT + "Để Thực hiện update "
                 + nameField + ", nhập 'y' hoặc 'yes' để cập nhật,"
                 + " hoặc nhập bất kỳ để huỷ : " + ColorText.RESET);
@@ -257,8 +268,8 @@ public class Category implements ICategory {
         if (input.equals("y") || input.equals("yes")) {
             return true;
         } else {
-            System.out.println(
-                    ColorText.YELLOW_BRIGHT + "Đã huỷ cập nhật " + nameField + ColorText.RESET);
+            System.out.println(ColorText.YELLOW_BRIGHT + "Đã huỷ cập nhật " + nameField + ColorText.RESET);
+            System.out.println();
             return false;
         }
     }

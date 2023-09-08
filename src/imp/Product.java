@@ -139,40 +139,50 @@ public class Product implements IProduct {
     public void inputData(Scanner scanner, List<Product> allProduct, List<Category> categoryList) {
         // input ID
         if (!this.id.isEmpty()) {
-            if (askForUpdateData(scanner, "Id")) {
+            if (askForUpdateData(scanner, "'mã sản phẩm'", this.id)) {
                 inputID(scanner, allProduct, categoryList); // id
+                System.out.println(ColorText.GREEN_BRIGHT + "Cập nhật thành công" + ColorText.RESET);
+                System.out.println();
             }
         } else {
             inputID(scanner, allProduct, categoryList);
         }
         // input Name
         if (!this.name.isEmpty()) {
-            if (askForUpdateData(scanner, "'Name'")) {
+            if (askForUpdateData(scanner, "'tên sản phẩm'", this.name)) {
                 inputName(scanner, allProduct, categoryList);
+                System.out.println(ColorText.GREEN_BRIGHT + "Cập nhật thành công" + ColorText.RESET);
+                System.out.println();
             }
         } else {
             inputName(scanner, allProduct, categoryList);
         }
         // input Desc
         if (!this.description.isEmpty()) {
-            if (askForUpdateData(scanner, "'Description'")) {
+            if (askForUpdateData(scanner, "'mô tả'", this.description)) {
                 inputDescription(scanner);
+                System.out.println(ColorText.GREEN_BRIGHT + "Cập nhật thành công" + ColorText.RESET);
+                System.out.println();
             }
         } else {
             inputDescription(scanner);
         }
         // input Import
         if (this.importPrice != 0) {
-            if (askForUpdateData(scanner, "'Import'")) {
+            if (askForUpdateData(scanner, "'giá nhập'", String.valueOf(importPrice))) {
                 inputImportPrice(scanner);
+                System.out.println(ColorText.GREEN_BRIGHT + "Cập nhật thành công" + ColorText.RESET);
+                System.out.println();
             }
         } else {
             inputImportPrice(scanner);
         }
         // input Export
         if (this.exportPrice != 0) {
-            if (askForUpdateData(scanner, "'Export'")) {
+            if (askForUpdateData(scanner, "'giá xuất'", String.valueOf(exportPrice))) {
                 inputExportPrice(scanner);
+                System.out.println(ColorText.GREEN_BRIGHT + "Cập nhật thành công" + ColorText.RESET);
+                System.out.println();
             }
         } else {
             inputExportPrice(scanner);
@@ -221,6 +231,7 @@ public class Product implements IProduct {
         }
     }
 
+    // kiểm tra cho input ID
     public boolean regexProductId(String productId) {
         String productIdRegex = "^P[\\w\\d]{3}$"; //^P[0-9]{3}$
         return Pattern.matches(productIdRegex, productId);
@@ -363,11 +374,15 @@ public class Product implements IProduct {
         do {
             try {
                 String input = scanner.nextLine().toLowerCase().trim();
-                if (input.equals("true"))
+                if (input.equals("true")) {
                     this.status = true;
-                else if (input.equals("false"))
+                    System.out.println(ColorText.GREEN_BRIGHT + "Cập nhật thành công" + ColorText.RESET);
+                    System.out.println();
+                } else if (input.equals("false")) {
                     this.status = false;
-                else {
+                    System.out.println(ColorText.GREEN_BRIGHT + "Cập nhật thành công" + ColorText.RESET);
+                    System.out.println();
+                } else {
                     throw new Exception(" Nhập không đúng yêu cầu. Xin hãy nhập lại !");
                 }
                 break;
@@ -391,21 +406,24 @@ public class Product implements IProduct {
         if (input.equals("y") || input.equals("yes")) {
             return true;
         } else {
-            System.out.println(
-                    ColorText.YELLOW_BRIGHT + "Đã huỷ cập nhật " + "Status" + ColorText.RESET);
+            System.out.println(ColorText.YELLOW_BRIGHT + "Đã huỷ cập nhật " + "Status" + ColorText.RESET);
+            System.out.println();
             return false;
         }
     }
 
-    private boolean askForUpdateData(Scanner scanner, String nameField) {
+    private boolean askForUpdateData(Scanner scanner, String nameField, String oldData) {
+        System.out.println("Giá trị trước đây của "
+                + ColorText.GREEN_BRIGHT + nameField + ColorText.RESET
+                + " là : " + ColorText.YELLOW_BRIGHT + oldData + ColorText.RESET);
         System.out.print(ColorText.WHITE_BRIGHT + "Để cập nhật " + nameField + ", nhập 'y' hoặc 'yes' để cập nhật," +
                 " hoặc nhập bất kỳ để huỷ : " + ColorText.RESET);
         String input = scanner.nextLine().toLowerCase().trim();
         if (input.equals("y") || input.equals("yes")) {
             return true;
         } else {
-            System.out.println(
-                    ColorText.YELLOW_BRIGHT + "Đã huỷ cập nhật " + nameField + ColorText.RESET);
+            System.out.println(ColorText.YELLOW_BRIGHT + "Đã huỷ cập nhật " + nameField + ColorText.RESET);
+            System.out.println();
             return false;
         }
     }

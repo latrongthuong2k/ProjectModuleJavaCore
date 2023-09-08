@@ -1,1 +1,28 @@
 ****Products****
+Product Id: Pa04
+Product Name: Ghê ngồi
+Product Description: Ghế ngồi học
+Product Status: false
+Import Price: 1000.0
+Export Price: 1300.0
+Profit: 300.0
+CategoryId: 2
+
+Product Id: Pa02
+Product Name: Cái bàn
+Product Description: bàn học
+Product Status: true
+Import Price: 2000.0
+Export Price: 4000.0
+Profit: 2000.0
+CategoryId: 2
+
+Product Id: P008
+Product Name: Sản phẩm new
+Product Description: Sản phẩm new
+Product Status: true
+Import Price: 1000.0
+Export Price: 2000.0
+Profit: 1000.0
+CategoryId: 3
+

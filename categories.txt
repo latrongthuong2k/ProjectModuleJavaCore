@@ -1,6 +1,12 @@
 ****Category****
-Id: 1
-Name: Danh mục 1
-Description: Danh mục
+Id: 2
+Name: Bàn ghế
+Description: Nội thất
+Status: true
+
+****Category****
+Id: 3
+Name: Quần áo
+Description: Các loại áo
 Status: true
 

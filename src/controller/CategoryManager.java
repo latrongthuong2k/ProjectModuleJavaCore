@@ -146,6 +146,9 @@ public class CategoryManager {
                 if (input.equals("exit")) {
                     System.out.println(ColorText.YELLOW_BRIGHT + "Đã thoát lệnh cập nhật" + ColorText.RESET);
                     return;
+                } else if (input.isEmpty()) {
+                    System.err.println("Không được để trống ! ");
+                    continue;
                 }
                 // Dò tìm
                 for (Category item : categoryList) {
@@ -195,6 +198,9 @@ public class CategoryManager {
                 if (input.equals("exit")) {
                     System.out.println(ColorText.YELLOW_BRIGHT + "Đã thoát lệnh xoá" + ColorText.RESET);
                     return false;
+                } else if (input.isEmpty()) {
+                    System.err.println("Không được để trống ! ");
+                    continue;
                 }
                 // find category
                 for (Category item : categoryList) {
@@ -270,6 +276,7 @@ public class CategoryManager {
         System.out.println(DesignTable.getBorderCategoryTable());
         categoryList.forEach(Category::displayData);
         System.out.println(DesignTable.getBorderCategoryTable());
+        System.out.println();
         //
         boolean isFound = false;
         Category foundCategory = null;
@@ -281,6 +288,9 @@ public class CategoryManager {
                 if (input.equals("exit")) {
                     System.out.println(ColorText.YELLOW_BRIGHT + "Đã thoát lệnh chọn danh mục" + ColorText.RESET);
                     return null;
+                } else if (input.isEmpty()) {
+                    System.err.println("Không được để trống ! ");
+                    continue;
                 }
                 for (Category item : categoryList) {
                     if (isInputMatching(item, input)) {
@@ -317,6 +327,7 @@ public class CategoryManager {
             prod.displayData(categoryList);
         }
         System.out.println(DesignTable.getBorderProductTable());
+        System.out.println();
         return foundCategory;
     }
 
@@ -342,13 +353,13 @@ public class CategoryManager {
      * @param categoryList : danh sách các danh mục được lấy từ Inventory
      */
     public void findCategoryByNameAndDisplay(Scanner scanner, List<Category> categoryList) {
-        // hiển thị bảng cho dễ tìm
-        displayCategory(categoryList);
         // check có danh sách có trống không
         if (categoryList.isEmpty()) {
             System.err.println("Chưa có danh mục nào để hiển thị !");
             return;
         }
+        // hiển thị bảng cho dễ tìm
+        displayCategory(categoryList);
         System.out.println("Nhập 'Tên' danh mục để tìm kiếm, hoặc nhập 'exit' để thoát tìm kiếm :");
         while (true) {
             String input = scanner.nextLine().toLowerCase().trim();
@@ -370,17 +381,19 @@ public class CategoryManager {
                 if (filteredListCategory.isEmpty())
                     throw new RuntimeException("Không tìm thấy danh mục : " + input);
                 // kẻ bảng
-                System.out.println(ColorText.WHITE_BRIGHT + "Đã tìm thấy"
+                System.out.println(ColorText.WHITE_BRIGHT + "Đã tìm thấy "
                         + filteredListCategory.size()
-                        + "danh mục" + ColorText.RESET);
+                        + " danh mục trong kho" + ColorText.RESET);
                 System.out.println(DesignTable.getBorderCategoryTable());
                 System.out.println(DesignTable.getCategoryTitle());
                 System.out.println(DesignTable.getBorderCategoryTable());
                 filteredListCategory.forEach(Category::displayData);
                 System.out.println(DesignTable.getBorderCategoryTable());
+                System.out.println();
                 System.out.println(ColorText.WHITE_BRIGHT
                         + "Bạn có thể nhập 'Tên' danh mục khác để tìm kiếm, hoặc nhập 'exit' để thoát :"
                         + ColorText.RESET);
+                System.out.println();
                 // error
             } catch (NumberFormatException e) {
                 System.err.println("Lỗi input :" + e.getMessage() + " ?  xin hãy nhập lại");

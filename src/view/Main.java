@@ -141,6 +141,7 @@ public class Main {
             while (true) {
                 if (scanner.hasNextInt()) {
                     categoryChoice = scanner.nextInt();
+                    scanner.nextLine();
                     if (categoryChoice < 1 || categoryChoice > 6) {
                         System.err.println("* Lệnh chọn phải từ 1-6 !");
                         continue;
@@ -151,7 +152,6 @@ public class Main {
                     scanner.nextLine();
                 }
             }
-            scanner.nextLine();
             switch (categoryChoice) {
                 case 1 -> {
                     // Thêm danh mục / ghi file
@@ -233,6 +233,7 @@ public class Main {
             while (true) {
                 if (scanner.hasNextInt()) {
                     productChoice = scanner.nextInt();
+                    scanner.nextLine();
                     if (productChoice < 1 || productChoice > 8) {
                         System.err.println("* Lệnh chọn phải từ 1-8 !");
                         continue;
