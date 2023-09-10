@@ -77,6 +77,14 @@ public class FileManager {
 
     //------------------------------------------------------------------------
 
+    /**
+     * Hàm lấy giá trị string và line đang đọc, và trả về giá trị
+     * String mới sau độ dài của startWithText
+     *
+     * @param line          dòng string đang đọc
+     * @param startWithText string nhận vào
+     * @return Trả về giá trị string sau độ dài
+     */
     public String getValueFromLine(String line, String startWithText) {
         return line.substring(startWithText.length());
     }
@@ -118,7 +126,11 @@ public class FileManager {
 //        }
 //    }
 
-    //
+    /**
+     * Hàm đọc data các sản phẩm từ file txt trong project
+     *
+     * @param inventoryManagement truyền vào đối tượng kho để thực hiện thao tác lên
+     */
     public void readDataProduct(InventoryManagement inventoryManagement) {
         List<Category> categoryList = inventoryManagement.getCategoryList();
         List<Product> sampleProductList = new ArrayList<>();
@@ -165,8 +177,12 @@ public class FileManager {
         }
     }
 
-    //
-    public void readDataCategory2(InventoryManagement inventoryManagement) {
+    /**
+     * Hàm đọc data của các danh mục txt ở trong file project
+     *
+     * @param inventoryManagement truyền vào đối tượng kho để thực hiện thao tác lên
+     */
+    public void readDataCategory(InventoryManagement inventoryManagement) {
         List<Category> categoryList = inventoryManagement.getCategoryList();
         // obj file
         File file = new File("categories.txt");
@@ -199,12 +215,21 @@ public class FileManager {
         }
     }
 
-    //
+    /**
+     * Hàm gọi chung 1 lần cho việc đọc Category và Products
+     *
+     * @param inventoryManagement truyền vào đối tượng kho để thực hiện thao tác lên
+     */
     public void readAll(InventoryManagement inventoryManagement) {
-        readDataCategory2(inventoryManagement);
+        readDataCategory(inventoryManagement);
         readDataProduct(inventoryManagement);
     }
 
+    /**
+     * Hàm viết ra file txt và lưu vào trong file của project
+     *
+     * @param categoryList list các danh mục của kho
+     */
     public void writeFileCategory2(List<Category> categoryList) {
         List<Product> totalProductList = new ArrayList<>();
         try (PrintWriter writer = new PrintWriter("categories.txt")) {

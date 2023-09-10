@@ -277,6 +277,11 @@ public class Product implements IProduct {
         }
     }
 
+    /**
+     * Hàm nhập giá trị giá cho đối tượng
+     *
+     * @param scanner đối tượng scanner để thực hiện cho việc nhập
+     */
     public void inputImportPrice(Scanner scanner) {
         // 購入価格を入力
         boolean isExit = true;
@@ -393,8 +398,13 @@ public class Product implements IProduct {
         while (true);
     }
 
-    // ask
-
+    /**
+     * Hàm hỏi để cập nhật status true thì sẽ cho cập nhật false thì sẽ huỷ
+     *
+     * @param scanner nhận vào đối tượng scanner
+     * @param status  nhận vào giá trị status của đối tượng product đang thao tác
+     * @return trả về kết quả true or false cho cho việc hỏi
+     */
     private boolean ashForUpdateStatus(Scanner scanner, boolean status) {
         String textStatus = status ? ColorText.GREEN_BRIGHT + "Còn hàng" + ColorText.RESET :
                 ColorText.YELLOW_BRIGHT + "Ngừng kinh doanh" + ColorText.RESET;
@@ -412,6 +422,14 @@ public class Product implements IProduct {
         }
     }
 
+    /**
+     * Hỏi để cập nhật các trường input cho đối tượng
+     *
+     * @param scanner   nhận vào đối tượng scanner
+     * @param nameField nhận vào tên trường cụ thể cho mỗi lần hỏi
+     * @param oldData   giá trị cũ của trường
+     * @return trả về kết quả sau khi hỏi, true cho việc cho phép sửa và false cho việc huỷ sửa
+     */
     private boolean askForUpdateData(Scanner scanner, String nameField, String oldData) {
         System.out.println("Giá trị trước đây của "
                 + ColorText.GREEN_BRIGHT + nameField + ColorText.RESET

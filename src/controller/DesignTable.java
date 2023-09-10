@@ -91,6 +91,12 @@ public class DesignTable {
         return field;
     }
 
+    /**
+     * Hàm tạo khung liệt kê các danh mục
+     *
+     * @param size số lượng danh mục
+     * @return trả về thiết kế với số lượng
+     */
     static public String statisticForTableCategory(int size) {
         String border = "-";
         String statistic = (ColorText.YELLOW_BOLD_BRIGHT + border.repeat(33) + " Hiện có tổng: "
@@ -98,6 +104,12 @@ public class DesignTable {
         return statistic;
     }
 
+    /**
+     * Hàm tạo khung liệt kê các sản phẩm
+     *
+     * @param size số lượng sp
+     * @return trả về thiết kế với số lượng
+     */
     static public String statisticForTableProduct(int size) {
         String border = "-";
         String statistic = (ColorText.YELLOW_BOLD_BRIGHT + border.repeat(84) + " Hiện có tổng: "
